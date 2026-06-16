@@ -1,0 +1,21 @@
+{
+  "name": "Empregaê",
+  "short_name": "Empregaê",
+  "description": "Encontre profissionais informais perto do seu endereço e cadastre serviços gratuitamente.",
+  "start_url": "index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fbfcf8",
+  "theme_color": "#10261c",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "assets/logo-empregae.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "productivity", "social"],
+  "lang": "pt-BR"
+}

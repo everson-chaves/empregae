@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Empregaê | App</title>
+    <meta name="theme-color" content="#183c34" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="simple-app-body">
+    <main class="simple-app">
+      <section class="app-home-card">
+        <div class="app-brand-row">
+          <svg class="app-icon" viewBox="0 0 96 96" aria-hidden="true">
+            <rect width="96" height="96" rx="26" fill="#F7F1E8" />
+            <path d="M25 23H68V36H39V45H64V57H39V73H25V23Z" fill="#183C34" />
+            <path d="M61 18C73 18 83 27.6 83 39.5C83 56.5 61 73 61 73C61 73 39 56.5 39 39.5C39 27.6 49 18 61 18Z" fill="#28B978" />
+            <circle cx="61" cy="39" r="7" fill="#F7F1E8" />
+            <path d="M22 75C32 66 43 62 55 62C64 62 72 65 80 70L73 82C67 78 61 76 55 76C45 76 38 79 30 86L22 75Z" fill="#E8A93A" />
+          </svg>
+          <div>
+            <strong>Empregaê</strong>
+            <span>Serviços perto de você</span>
+          </div>
+        </div>
+
+        <h1>O que você precisa hoje?</h1>
+
+        <div class="quick-actions" aria-label="Ações principais">
+          <a class="big-action primary" href="index.html#home">
+            <span>Preciso de serviço</span>
+            <small>Busque, dê match e reserve</small>
+          </a>
+          <a class="big-action" href="index.html#cadastro">
+            <span>Quero trabalhar</span>
+            <small>Crie seu perfil gratuito</small>
+          </a>
+        </div>
+
+        <form class="simple-search" action="index.html#profissionais">
+          <label>
+            Digite seu bairro
+            <input type="text" placeholder="Ex: Centro, sua cidade" />
+          </label>
+          <button type="submit">Buscar perto de mim</button>
+        </form>
+      </section>
+
+      <section class="simple-list">
+        <div class="simple-section-title">
+          <h2>Mais pedidos</h2>
+          <a href="index.html#profissionais">Ver todos</a>
+        </div>
+
+        <a class="service-row" href="index.html#profissionais">
+          <span>01</span>
+          <div><strong>Diarista</strong><small>Sala, cozinha, quartos e almoço</small></div>
+        </a>
+        <a class="service-row" href="index.html#profissionais">
+          <span>02</span>
+          <div><strong>Cuidadora</strong><small>Rotina, remédios, alimentação e plantão</small></div>
+        </a>
+        <a class="service-row" href="index.html#profissionais">
+          <span>03</span>
+          <div><strong>Babá</strong><small>Idade da criança, horário e cuidados</small></div>
+        </a>
+      </section>
+
+      <section class="simple-list">
+        <div class="simple-section-title">
+          <h2>Como funciona</h2>
+        </div>
+        <div class="worker-plan-row">
+          <strong>Match por necessidade</strong>
+          <span>O app pergunta detalhes do serviço antes de enviar a reserva.</span>
+        </div>
+        <div class="worker-plan-row highlight">
+          <strong>Aceite em até 4 horas</strong>
+          <span>O profissional aceita, recusa ou sugere outro horário.</span>
+        </div>
+      </section>
+
+      <nav class="bottom-nav" aria-label="Navegação do app">
+        <a href="playstore.html" aria-current="page">Início</a>
+        <a href="index.html#profissionais">Buscar</a>
+        <a href="index.html#cadastro">Perfil</a>
+      </nav>
+    </main>
+  </body>
+</html>
