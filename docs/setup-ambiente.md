@@ -56,22 +56,29 @@ cp .env.example .env
 npm run db:start
 ```
 
-O `db:start` baixa as imagens do Postgres na primeira vez (alguns minutos, só uma vez) e no final imprime um bloco assim:
+O `db:start` baixa as imagens na primeira vez (alguns GB, só uma vez) e no final imprime as URLs e chaves. Para vê-las de novo a qualquer momento: `npm run db:status`.
 
-```
-API URL: http://127.0.0.1:54321
-Studio URL: http://127.0.0.1:54323
-anon key: eyJhbGciOi...
-```
-
-Copie a `anon key` para o seu `.env`:
+Copie os valores para o seu `.env`:
 
 ```
 VITE_SUPABASE_URL=http://127.0.0.1:54321
-VITE_SUPABASE_ANON_KEY=eyJhbGciOi...
+VITE_SUPABASE_ANON_KEY=<o valor de "anon key">
 ```
 
-O **Studio** em `http://127.0.0.1:54323` é o painel do seu banco local — dá para ver tabelas, rodar SQL e inspecionar as políticas de RLS.
+> O CLI mostra **duas** chaves públicas: `anon key` (formato antigo, `eyJ...`) e `publishable key` (formato novo, `sb_publishable_...`). As duas funcionam. Use a `anon key` — é a que o cliente JS do Supabase espera hoje, e é a que a documentação oficial ainda usa na maior parte dos exemplos.
+
+### Portas do ambiente local
+
+| Serviço | URL | Para que serve |
+|---|---|---|
+| API | `http://127.0.0.1:54321` | O que o frontend consome |
+| **Studio** | `http://127.0.0.1:54323` | Painel do banco: tabelas, SQL, inspeção de RLS |
+| **Mailpit** | `http://127.0.0.1:54324` | **Caixa de e-mail falsa** — todo e-mail que o app enviar cai aqui |
+| Postgres | `127.0.0.1:54322` | Conexão direta (`postgres` / `postgres`) |
+
+O Mailpit vai ser essencial na E01: recuperação de senha e confirmação de e-mail não saem para a internet no ambiente local, chegam nessa caixa.
+
+> **Quirk conhecido no Windows:** o container `supabase_vector` (coletor de logs) pode ficar em loop de restart. Isso afeta só a agregação de logs do Studio — banco, auth, realtime e storage funcionam normalmente. Não é bloqueio para nenhuma task do MVP1.
 
 ### Comandos do dia a dia
 
