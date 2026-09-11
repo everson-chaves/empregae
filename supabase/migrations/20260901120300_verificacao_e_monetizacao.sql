@@ -34,11 +34,17 @@ create table public.verifications (
 
   created_at        timestamptz not null default now(),
 
-  -- Uma decisão precisa registrar quem decidiu e quando. Aprovação anônima
-  -- em fluxo de antecedentes é problema de auditoria.
+  -- Uma decisão precisa registrar quando foi tomada. Pendente não tem decisão
+  -- nenhuma registrada.
+  --
+  -- Mesmo motivo do `concluido_por` em bookings: `revisado_por` é
+  -- `on delete set null`, então exigir NOT NULL aqui tornaria impossível
+  -- excluir a conta de qualquer admin que já tenha revisado alguma coisa.
+  -- A aplicação sempre grava o revisor; o banco só não transforma isso em
+  -- impedimento de exclusão.
   constraint revisao_coerente_com_status check (
-    (status =  'pendente' and revisado_por is null     and revisado_em is null) or
-    (status <> 'pendente' and revisado_por is not null and revisado_em is not null)
+    (status =  'pendente' and revisado_por is null and revisado_em is null) or
+    (status <> 'pendente' and revisado_em is not null)
   ),
 
   -- Aprovado sem validade viraria selo eterno. A validade é anual (T07.5).

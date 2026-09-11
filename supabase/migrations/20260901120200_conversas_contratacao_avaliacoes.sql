@@ -69,12 +69,22 @@ create table public.bookings (
   created_at               timestamptz not null default now(),
   updated_at               timestamptz not null default now(),
 
-  -- Coerência entre status e marcas de conclusão. Sem isto seria possível ter
-  -- uma contratação `concluido` sem saber quando nem por quem — e é
-  -- exatamente `concluido` que libera a avaliação.
+  -- Coerência entre status e marcas de conclusão: concluída tem data, não
+  -- concluída não tem nem data nem autor.
+  --
+  -- `concluido_por` é deliberadamente NÃO exigido, mesmo sendo preenchido
+  -- sempre pela aplicação. O motivo é a exclusão de conta: a FK é
+  -- `on delete set null`, então apagar o usuário zera esta coluna. Se o check
+  -- exigisse `concluido_por is not null`, o UPDATE da cascata violaria a
+  -- constraint e o DELETE falharia — tornando impossível excluir qualquer
+  -- usuário que já tenha concluído uma contratação, e inviabilizando o canal
+  -- de exclusão de dados que a LGPD exige (T10.1).
+  --
+  -- O que importa preservar é QUANDO foi concluída, porque é isso que libera
+  -- a avaliação. Quem clicou é rastreabilidade, e some junto com a conta.
   constraint conclusao_coerente_com_status check (
-    (status =  'concluido' and concluido_em is not null and concluido_por is not null) or
-    (status <> 'concluido' and concluido_em is null     and concluido_por is null)
+    (status =  'concluido' and concluido_em is not null) or
+    (status <> 'concluido' and concluido_em is null and concluido_por is null)
   )
 );
 
