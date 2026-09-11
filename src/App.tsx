@@ -11,6 +11,7 @@ import Contratacoes from './pages/Contratacoes'
 import Verificacao from './pages/Verificacao'
 import Admin from './pages/Admin'
 import NaoEncontrada from './pages/NaoEncontrada'
+import Diagnostico from './pages/Diagnostico'
 
 // As rotas espelham os módulos do spec, um arquivo por área. A divisão foi
 // desenhada para que as quatro trilhas não disputem os mesmos arquivos:
@@ -41,6 +42,9 @@ export default function App() {
 
         {/* E09 — Dev D */}
         <Route path="admin/*" element={<Admin />} />
+
+        {/* E00 — ferramenta de desenvolvimento, fora do build de producao */}
+        {import.meta.env.DEV && <Route path="diagnostico" element={<Diagnostico />} />}
 
         <Route path="*" element={<NaoEncontrada />} />
       </Route>
