@@ -16,7 +16,11 @@ type Checagem = {
 }
 
 export default function Diagnostico() {
-  const [checagens, setChecagens] = useState<Checagem[]>([])
+  // Estado inicial já é "rodando". Definir isso com setState dentro do efeito
+  // dispararia um render a mais sem necessidade.
+  const [checagens, setChecagens] = useState<Checagem[]>([
+    { nome: 'Conectando...', estado: 'rodando', detalhe: '' },
+  ])
 
   useEffect(() => {
     async function rodar() {
@@ -72,7 +76,6 @@ export default function Diagnostico() {
       setChecagens(resultados)
     }
 
-    setChecagens([{ nome: 'Conectando...', estado: 'rodando', detalhe: '' }])
     rodar().catch((e: unknown) => {
       setChecagens([
         { nome: 'Falha geral', estado: 'falhou', detalhe: traduzirErro(e) },
