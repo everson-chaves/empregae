@@ -152,12 +152,22 @@ select
 from _seed_pessoas;
 
 -- profiles -------------------------------------------------------------------
+-- O insert em auth.users acima já disparou o trigger da T01.5
+-- (criar_profile_apos_signup), que criou a linha de cada pessoa em
+-- public.profiles com id e nome -- telefone fica NULL nesse momento porque o
+-- metadata do seed só manda 'nome' (não 'telefone'), diferente do signup por
+-- telefone de verdade (T01.2). Por isso aqui é upsert, não insert puro: um
+-- insert normal bateria de frente com a linha que o trigger já criou
+-- (profiles_pkey duplicada).
 insert into public.profiles (id, nome, telefone, tipo)
 select ('00000000-0000-4000-8000-' || lpad(idx::text, 12, '0'))::uuid,
        nome, telefone,
        case papel when 'profissional' then 'profissional'::tipo_perfil
                   else 'cliente'::tipo_perfil end
-from _seed_pessoas;
+from _seed_pessoas
+on conflict (id) do update
+  set telefone = excluded.telefone,
+      tipo = excluded.tipo;
 
 -- admin ----------------------------------------------------------------------
 insert into public.admins (profile_id)
