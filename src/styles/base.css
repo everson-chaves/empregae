@@ -1170,3 +1170,73 @@ textarea:focus {
     align-items: start;
   }
 }
+
+/* T01.1 — Entrar / Cadastrar ------------------------------------------------
+   Reaproveita .signup-form (já usado no cadastro de profissional do legado)
+   em vez de criar um card novo: mesma sombra, mesmo grid, mesmo colapso para
+   1 coluna em telas de celular (ver media query acima). */
+
+.auth-page {
+  display: grid;
+  place-items: start center;
+  padding: clamp(24px, 6vw, 64px) 16px;
+}
+
+.auth-page .signup-form {
+  width: 100%;
+  max-width: 420px;
+  grid-template-columns: 1fr;
+}
+
+.auth-page h1 {
+  grid-column: 1 / -1;
+  margin: 0 0 4px;
+}
+
+.auth-page .auth-subtitulo {
+  grid-column: 1 / -1;
+  margin: 0 0 8px;
+  color: var(--muted);
+}
+
+.campo-erro {
+  margin: -3px 0 0;
+  color: var(--terracotta);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.form-alerta,
+.form-aviso {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.form-alerta {
+  border: 1px solid rgba(184, 108, 75, 0.35);
+  background: rgba(184, 108, 75, 0.1);
+  color: var(--terracotta);
+}
+
+.form-aviso {
+  border: 1px solid rgba(31, 143, 98, 0.25);
+  background: var(--mint);
+  color: var(--green-dark);
+}
+
+.auth-rodape {
+  grid-column: 1 / -1;
+  margin: 4px 0 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.auth-rodape a {
+  color: var(--green-dark);
+  font-weight: 800;
+}

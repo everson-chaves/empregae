@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
 import Layout from './components/Layout'
+import RotaProtegida from './components/RotaProtegida'
 import Busca from './pages/Busca'
 import PerfilProfissional from './pages/PerfilProfissional'
 import MeuPerfil from './pages/MeuPerfil'
@@ -26,22 +27,64 @@ export default function App() {
         <Route path="entrar" element={<Entrar />} />
         <Route path="cadastrar" element={<Cadastrar />} />
 
-        {/* E02 — Dev B */}
+        {/* E02 — Dev B. Perfil público, sem login; "meu perfil" exige sessão (T01.3). */}
         <Route path="profissional/:id" element={<PerfilProfissional />} />
-        <Route path="meu-perfil" element={<MeuPerfil />} />
+        <Route
+          path="meu-perfil"
+          element={
+            <RotaProtegida>
+              <MeuPerfil />
+            </RotaProtegida>
+          }
+        />
 
-        {/* E04 — Dev C */}
-        <Route path="conversas" element={<Conversas />} />
-        <Route path="conversas/:id" element={<Conversa />} />
+        {/* E04 — Dev C. Conversa é sempre entre duas pessoas logadas (T01.3). */}
+        <Route
+          path="conversas"
+          element={
+            <RotaProtegida>
+              <Conversas />
+            </RotaProtegida>
+          }
+        />
+        <Route
+          path="conversas/:id"
+          element={
+            <RotaProtegida>
+              <Conversa />
+            </RotaProtegida>
+          }
+        />
 
-        {/* E05 — Dev D */}
-        <Route path="contratacoes" element={<Contratacoes />} />
+        {/* E05 — Dev D (T01.3: exige sessão) */}
+        <Route
+          path="contratacoes"
+          element={
+            <RotaProtegida>
+              <Contratacoes />
+            </RotaProtegida>
+          }
+        />
 
-        {/* E07 — Dev A */}
-        <Route path="verificacao" element={<Verificacao />} />
+        {/* E07 — Dev A (T01.3: exige sessão) */}
+        <Route
+          path="verificacao"
+          element={
+            <RotaProtegida>
+              <Verificacao />
+            </RotaProtegida>
+          }
+        />
 
-        {/* E09 — Dev D */}
-        <Route path="admin/*" element={<Admin />} />
+        {/* E09 — Dev D. T01.3 só garante sessão; restringir a admin de fato é da T09.1. */}
+        <Route
+          path="admin/*"
+          element={
+            <RotaProtegida>
+              <Admin />
+            </RotaProtegida>
+          }
+        />
 
         {/* E00 — ferramenta de desenvolvimento, fora do build de producao */}
         {import.meta.env.DEV && <Route path="diagnostico" element={<Diagnostico />} />}
