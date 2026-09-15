@@ -1,14 +1,22 @@
 import { type FormEvent, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { entrar, validarEmail, validarSenha } from '../lib/auth'
 import { ErroDeAplicacao } from '../lib/erros'
 
 type Campo = 'email' | 'senha'
 
+type EstadoDeOrigem = { de?: string }
+
 // T01.1 — Login por e-mail e senha.
 // A T01.2 adiciona o telefone como identificador alternativo, sem SMS.
 export default function Entrar() {
   const navegar = useNavigate()
+  const local = useLocation()
+  // Quando a RotaProtegida (T01.3) manda pra cá, ela guarda de onde veio em
+  // `state.de` — login bem-sucedido volta pra lá em vez de sempre cair na
+  // home. Sem isto, clicar num link protegido e logar te joga pra "/" e você
+  // perde o que estava tentando abrir.
+  const destinoAposLogin = (local.state as EstadoDeOrigem | null)?.de ?? '/'
 
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
@@ -35,7 +43,7 @@ export default function Entrar() {
     setEnviando(true)
     try {
       await entrar({ email, senha })
-      navegar('/')
+      navegar(destinoAposLogin, { replace: true })
     } catch (erro) {
       setErroGeral(erro instanceof ErroDeAplicacao ? erro.message : 'Algo deu errado. Tente de novo.')
     } finally {
