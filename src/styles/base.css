@@ -1240,3 +1240,15 @@ textarea:focus {
   color: var(--green-dark);
   font-weight: 800;
 }
+
+/* T01.2 — toggle "E-mail" / "Telefone" no cadastro. Reaproveita
+   .category-button/.is-active (já usado nos filtros de categoria da busca)
+   em vez de criar um botão novo — mesmo visual de "escolha uma opção". */
+.auth-toggle-identificador {
+  display: flex;
+  gap: 8px;
+}
+
+.auth-toggle-identificador .category-button {
+  flex: 1;
+}

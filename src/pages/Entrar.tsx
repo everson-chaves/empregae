@@ -1,14 +1,16 @@
 import { type FormEvent, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { entrar, validarEmail, validarSenha } from '../lib/auth'
+import { entrar, validarIdentificador, validarSenha } from '../lib/auth'
 import { ErroDeAplicacao } from '../lib/erros'
 
-type Campo = 'email' | 'senha'
+type Campo = 'identificador' | 'senha'
 
 type EstadoDeOrigem = { de?: string }
 
 // T01.1 — Login por e-mail e senha.
-// A T01.2 adiciona o telefone como identificador alternativo, sem SMS.
+// T01.2 — O mesmo campo aceita telefone também (sem SMS, mapeado por baixo
+// dos panos para um e-mail sintético — ver src/lib/auth.ts). Um campo só,
+// sem seletor: quem já sabe o que digitou não precisa escolher o tipo antes.
 export default function Entrar() {
   const navegar = useNavigate()
   const local = useLocation()
@@ -18,7 +20,7 @@ export default function Entrar() {
   // perde o que estava tentando abrir.
   const destinoAposLogin = (local.state as EstadoDeOrigem | null)?.de ?? '/'
 
-  const [email, setEmail] = useState('')
+  const [identificador, setIdentificador] = useState('')
   const [senha, setSenha] = useState('')
 
   const [erros, setErros] = useState<Partial<Record<Campo, string>>>({})
@@ -27,7 +29,7 @@ export default function Entrar() {
 
   function validarTudo(): boolean {
     const proximosErros: Partial<Record<Campo, string>> = {
-      email: validarEmail(email) ?? undefined,
+      identificador: validarIdentificador(identificador) ?? undefined,
       senha: validarSenha(senha) ?? undefined,
     }
     setErros(proximosErros)
@@ -42,7 +44,7 @@ export default function Entrar() {
 
     setEnviando(true)
     try {
-      await entrar({ email, senha })
+      await entrar({ identificador, senha })
       navegar(destinoAposLogin, { replace: true })
     } catch (erro) {
       setErroGeral(erro instanceof ErroDeAplicacao ? erro.message : 'Algo deu errado. Tente de novo.')
@@ -60,16 +62,16 @@ export default function Entrar() {
         {erroGeral && <p className="form-alerta">{erroGeral}</p>}
 
         <label className="full">
-          E-mail
+          E-mail ou telefone
           <input
-            type="email"
-            autoComplete="email"
-            value={email}
-            onChange={(evento) => setEmail(evento.target.value)}
-            aria-invalid={Boolean(erros.email)}
+            type="text"
+            autoComplete="username"
+            value={identificador}
+            onChange={(evento) => setIdentificador(evento.target.value)}
+            aria-invalid={Boolean(erros.identificador)}
           />
         </label>
-        {erros.email && <p className="campo-erro full">{erros.email}</p>}
+        {erros.identificador && <p className="campo-erro full">{erros.identificador}</p>}
 
         <label className="full">
           Senha
