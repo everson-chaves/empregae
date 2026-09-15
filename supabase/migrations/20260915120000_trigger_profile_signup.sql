@@ -24,13 +24,20 @@ begin
   -- signUp (T01.1). Sem metadata (ex.: usuário criado direto no painel),
   -- cai para a parte local do e-mail — nunca deixa `nome` vazio, porque a
   -- coluna é NOT NULL e o check exige de 2 a 120 caracteres.
-  insert into public.profiles (id, nome)
+  --
+  -- `telefone` (T01.2) só vem preenchido quando o cadastro foi feito com
+  -- telefone como identificador (src/lib/auth.ts#cadastrar) — nesse caso o
+  -- e-mail em auth.users é sintético, e quem o app trata como "o telefone da
+  -- pessoa" é esta coluna, nunca o e-mail. Em cadastro por e-mail, fica NULL
+  -- (a unique constraint aceita múltiplos NULL sem conflito).
+  insert into public.profiles (id, nome, telefone)
   values (
     new.id,
     coalesce(
       nullif(btrim(new.raw_user_meta_data ->> 'nome'), ''),
       split_part(new.email, '@', 1)
-    )
+    ),
+    nullif(btrim(new.raw_user_meta_data ->> 'telefone'), '')
   );
   return new;
 end;

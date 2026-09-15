@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { AuthError, Session } from '@supabase/supabase-js'
 import { supabase } from './supabase'
 import { ErroDeAplicacao } from './erros'
+import { normalizarTelefone, pareceTelefone } from './telefone'
 
 // T01.1 — Cadastro e login por e-mail e senha.
 //
@@ -59,6 +60,27 @@ function lancarSeErro(erro: AuthError | null): void {
   if (erro) throw new ErroDeAplicacao(traduzirErroAuth(erro), erro)
 }
 
+// T01.2 — Telefone como identificador de login.
+//
+// GoTrue só entende e-mail. Para deixar telefone entrar sem mexer no
+// schema do Supabase Auth (fora do nosso controle), mapeamos o telefone
+// normalizado para um e-mail sintético — nunca enviado, nunca lido por
+// gente, só existe como chave interna do GoTrue. `.invalid` é o TLD
+// reservado pela RFC 2606 pra domínio que nunca deve resolver de
+// verdade, então não corre o risco de colidir com um domínio real nem
+// de alguém tentar mandar e-mail pra lá.
+//
+// Isso só funciona porque `enable_confirmations` fica desligado no
+// projeto (supabase/config.toml e o painel do projeto hosteado) — um
+// e-mail sintético nunca recebe o link de confirmação. Ligar
+// confirmação de e-mail no futuro exige tratar cadastro por telefone
+// separado (ex.: confirmar por OTP de verdade — ver docs/telefone-login.md).
+const DOMINIO_TELEFONE_SINTETICO = 'telefone.empregae.invalid'
+
+function telefoneParaEmailSintetico(telefoneNormalizado: string): string {
+  return `tel-${telefoneNormalizado}@${DOMINIO_TELEFONE_SINTETICO}`
+}
+
 // --- Validação de campo, para feedback antes da viagem de rede -------------
 // Propositalmente simples: quem decide de verdade é o servidor (T00.4 e as
 // regras do GoTrue). Isto só pega erro óbvio de digitação na hora.
@@ -75,6 +97,21 @@ export function validarEmail(email: string): string | null {
   if (!limpo) return 'Digite seu e-mail.'
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(limpo)) return 'Digite um e-mail válido.'
   return null
+}
+
+export function validarTelefone(telefone: string): string | null {
+  const limpo = telefone.trim()
+  if (!limpo) return 'Digite seu telefone.'
+  if (!normalizarTelefone(limpo)) return 'Digite um telefone válido, com DDD (ex.: 11 91234-5678).'
+  return null
+}
+
+// Campo único de login (T01.2) — aceita e-mail ou telefone e valida de
+// acordo com o que a pessoa parece ter digitado (telefone.ts#pareceTelefone).
+export function validarIdentificador(valor: string): string | null {
+  const limpo = valor.trim()
+  if (!limpo) return 'Digite seu e-mail ou telefone.'
+  return pareceTelefone(limpo) ? validarTelefone(limpo) : validarEmail(limpo)
 }
 
 export function validarSenha(senha: string): string | null {
@@ -94,8 +131,9 @@ export function validarConfirmacaoSenha(senha: string, confirmacao: string): str
 
 type ResultadoCadastro = {
   /** true quando o projeto exige confirmação de e-mail antes do login (não
-   * há sessão ainda). false quando a sessão já veio pronta (local/dev, ou
-   * confirmação de e-mail desligada no projeto). */
+   * há sessão ainda). false quando a sessão já veio pronta (local/dev,
+   * confirmação de e-mail desligada no projeto, ou cadastro por telefone —
+   * um e-mail sintético nunca recebe confirmação, então nunca é o caso). */
   precisaConfirmarEmail: boolean
 }
 
@@ -103,28 +141,53 @@ type ResultadoCadastro = {
  * Cria a conta em auth.users. O `nome` vai como metadata do signup — é dali
  * que o trigger da T01.5 (`criar_profile_no_signup`) lê para preencher
  * `profiles.nome` na mesma transação.
+ *
+ * `identificador` é e-mail ou telefone, conforme `tipoIdentificador`
+ * (T01.2). Telefone vira e-mail sintético para o GoTrue e vai também como
+ * metadata `telefone`, de onde o trigger da T01.5 lê para preencher
+ * `profiles.telefone` — ver telefoneParaEmailSintetico acima.
  */
 export async function cadastrar(params: {
   nome: string
-  email: string
+  identificador: string
+  tipoIdentificador: 'email' | 'telefone'
   senha: string
 }): Promise<ResultadoCadastro> {
-  const { nome, email, senha } = params
+  const { nome, identificador, tipoIdentificador, senha } = params
+
+  let email: string
+  let telefoneParaMetadata: string | undefined
+
+  if (tipoIdentificador === 'telefone') {
+    const normalizado = normalizarTelefone(identificador)
+    if (!normalizado) throw new ErroDeAplicacao('Digite um telefone válido, com DDD.')
+    email = telefoneParaEmailSintetico(normalizado)
+    telefoneParaMetadata = normalizado
+  } else {
+    email = identificador.trim()
+  }
+
   const { data, error } = await supabase.auth.signUp({
-    email: email.trim(),
+    email,
     password: senha,
-    options: { data: { nome: nome.trim() } },
+    options: {
+      data: { nome: nome.trim(), ...(telefoneParaMetadata ? { telefone: telefoneParaMetadata } : {}) },
+    },
   })
   lancarSeErro(error)
-  return { precisaConfirmarEmail: data.session === null }
+  return { precisaConfirmarEmail: tipoIdentificador === 'email' && data.session === null }
 }
 
-export async function entrar(params: { email: string; senha: string }): Promise<void> {
-  const { email, senha } = params
-  const { error } = await supabase.auth.signInWithPassword({
-    email: email.trim(),
-    password: senha,
-  })
+// T01.2 — `identificador` é o que a pessoa digitou no campo único de
+// login: e-mail ou telefone. Telefone vira o mesmo e-mail sintético usado
+// no cadastro (telefoneParaEmailSintetico) — é assim que o GoTrue encontra
+// a conta certa sem saber que 'telefone' existe.
+export async function entrar(params: { identificador: string; senha: string }): Promise<void> {
+  const { identificador, senha } = params
+  const limpo = identificador.trim()
+  const normalizado = pareceTelefone(limpo) ? normalizarTelefone(limpo) : null
+  const email = normalizado ? telefoneParaEmailSintetico(normalizado) : limpo
+  const { error } = await supabase.auth.signInWithPassword({ email, password: senha })
   lancarSeErro(error)
 }
 
