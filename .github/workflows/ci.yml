@@ -1,0 +1,120 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# PR com vários pushes seguidos cancela as execuções antigas em vez de
+# enfileirar. Em conta gratuita, minuto de runner é recurso escasso.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  qualidade:
+    name: Lint, tipos e build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Verificação de tipos
+        run: npm run typecheck
+
+      - name: Build
+        # Valores fictícios: o build não conecta em nada, mas o cliente exige
+        # as variáveis definidas. O deploy real usa as variáveis da Vercel.
+        env:
+          VITE_SUPABASE_URL: http://127.0.0.1:54321
+          VITE_SUPABASE_ANON_KEY: ci-placeholder
+        run: npm run build
+
+  banco:
+    name: Migrations e seed
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Sobe só o que o teste precisa. Studio, e-mail e edge runtime não
+      # participam e custariam um minuto a mais por execução.
+      - name: Subir Postgres
+        run: npx supabase start -x studio,imgproxy,inbucket,edge-runtime,logflare,vector
+
+      # Aplica todas as migrations do zero e roda o seed. É o que pega
+      # migration que depende de estado que só existe na máquina de quem
+      # escreveu — com quatro pessoas criando migration em paralelo, é o
+      # erro mais provável do projeto.
+      - name: Aplicar migrations do zero
+        run: npx supabase db reset
+
+      # `db reset` de novo prova que o seed é repetível. Foi assim que se
+      # descobriu, na T00.5, que a ordem dos DELETE estava errada e que a
+      # trava de segurança não interrompia a execução.
+      - name: Provar que o seed é repetível
+        run: npx supabase db reset
+
+      - name: Conferir que o seed populou de verdade
+        run: |
+          set -euo pipefail
+          consulta() {
+            docker exec supabase_db_empregae psql -U postgres -t -A -c "$1" | tr -d '[:space:]'
+          }
+          categorias=$(consulta "select count(*) from public.categories;")
+          anuncios=$(consulta "select count(*) from public.worker_profiles where ativo;")
+          echo "categorias=$categorias anuncios=$anuncios"
+          [ "$categorias" -ge 50 ] || { echo "::error::seed nao populou as categorias"; exit 1; }
+          [ "$anuncios"   -ge 20 ] || { echo "::error::seed nao populou os anuncios";   exit 1; }
+
+      # Uma tabela em `public` sem RLS é legível pela anon key, que vai no
+      # bundle do frontend. Esta checagem impede que uma migration futura
+      # crie tabela aberta sem ninguém notar na revisão.
+      - name: Nenhuma tabela sem RLS
+        run: |
+          set -euo pipefail
+          abertas=$(docker exec supabase_db_empregae psql -U postgres -t -A -c "
+            select coalesce(string_agg(t.tablename, ', '), '')
+            from pg_tables t
+            where t.schemaname = 'public'
+              and not exists (
+                select 1 from pg_class c
+                join pg_namespace n on n.oid = c.relnamespace
+                where n.nspname = 'public'
+                  and c.relname = t.tablename
+                  and c.relrowsecurity
+              );")
+          if [ -n "$abertas" ]; then
+            echo "::error::tabelas sem RLS ligada: $abertas"
+            exit 1
+          fi
+          echo "todas as tabelas de public tem RLS ligada"
+
+      # Os tipos do TypeScript descrevem o schema. Se alguém criar migration e
+      # esquecer de rodar `npm run db:types`, o tipo passa a mentir — e o
+      # TypeScript mente com confiança, sem avisar ninguém.
+      - name: Tipos estão em dia com o schema
+        run: |
+          set -euo pipefail
+          npx supabase gen types typescript --local > /tmp/tipos-atuais.ts
+          if ! diff -q --strip-trailing-cr /tmp/tipos-atuais.ts src/lib/database.types.ts > /dev/null; then
+            echo "::error::src/lib/database.types.ts esta desatualizado. Rode 'npm run db:types' e commite."
+            diff --strip-trailing-cr /tmp/tipos-atuais.ts src/lib/database.types.ts | head -40 || true
+            exit 1
+          fi
+          echo "tipos em dia"
