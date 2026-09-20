@@ -46,8 +46,8 @@ export async function buscarProfissionais(parametros: ParametrosBusca): Promise<
   const { data, error } = await supabase.rpc('buscar_profissionais', {
     p_lat: parametros.lat,
     p_lon: parametros.lon,
-    p_categoria_slug: parametros.categoriaSlug ?? null,
-    p_raio_maximo_km: parametros.raioMaximoKm ?? null,
+    p_categoria_slug: parametros.categoriaSlug ?? undefined,
+    p_raio_maximo_km: parametros.raioMaximoKm ?? undefined,
     p_limite: parametros.limite ?? 20,
     p_offset: parametros.offset ?? 0,
   })

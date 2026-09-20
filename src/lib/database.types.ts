@@ -438,15 +438,7 @@ export type Database = {
           raio_maximo_km?: number | null
           usuario_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "search_logs_usuario_id_fkey"
-            columns: ["usuario_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       verifications: {
         Row: {
@@ -598,27 +590,27 @@ export type Database = {
     Functions: {
       buscar_profissionais: {
         Args: {
-          p_categoria_slug?: string | null
+          p_categoria_slug?: string
           p_lat: number
           p_limite?: number
           p_lon: number
           p_offset?: number
-          p_raio_maximo_km?: number | null
+          p_raio_maximo_km?: number
         }
         Returns: {
-          avatar_url: string | null
-          bairro: string | null
-          categorias: string[] | null
-          cidade: string | null
-          descricao: string | null
-          distancia_km: number | null
+          avatar_url: string
+          bairro: string
+          categorias: string[]
+          cidade: string
+          descricao: string
+          distancia_km: number
           nome: string
-          preco_medio_centavos: number | null
+          preco_medio_centavos: number
           profile_id: string
           raio_atendimento_km: number
-          uf: string | null
-          unidade_preco: Database["public"]["Enums"]["unidade_preco"] | null
-          verificado_ate: string | null
+          uf: string
+          unidade_preco: Database["public"]["Enums"]["unidade_preco"]
+          verificado_ate: string
           worker_profile_id: string
         }[]
       }
