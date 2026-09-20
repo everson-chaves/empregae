@@ -547,8 +547,7 @@ textarea:focus {
 }
 
 .card-actions button,
-.card-actions a,
-.whatsapp-link {
+.card-actions a {
   display: grid;
   min-height: 42px;
   place-items: center;
@@ -564,14 +563,12 @@ textarea:focus {
 }
 
 .card-actions a,
-.hire-button,
-.whatsapp-link {
+.hire-button {
   background: var(--green);
   color: #fff;
 }
 
-.hire-button,
-.whatsapp-link {
+.hire-button {
   border: 0;
   cursor: pointer;
 }
@@ -1294,4 +1291,161 @@ textarea:focus {
   margin-top: 16px;
   display: grid;
   gap: 10px;
+}
+
+/* E04 — Chat em tempo real (Conversas.tsx e Conversa.tsx). */
+
+.conversas-lista {
+  display: grid;
+  gap: 10px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.conversa-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
+  color: inherit;
+  text-decoration: none;
+}
+
+.conversa-item-corpo {
+  min-width: 0;
+  flex: 1;
+}
+
+.conversa-item-topo {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.conversa-item-hora {
+  flex: 0 0 auto;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.conversa-item-corpo p {
+  margin: 2px 0 0;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.conversa-item-badge {
+  display: grid;
+  flex: 0 0 auto;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--green);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.chat-pagina {
+  display: grid;
+  gap: 16px;
+}
+
+.chat-briefing {
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #f7f9f5;
+}
+
+.chat-briefing strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 13px;
+  color: var(--green-dark);
+}
+
+.chat-briefing-data {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.chat-mensagens {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 52vh;
+  overflow-y: auto;
+  padding: 4px 2px;
+}
+
+.chat-carregar-mais {
+  align-self: center;
+  margin-bottom: 8px;
+}
+
+.chat-balao {
+  max-width: 72%;
+  padding: 8px 12px;
+  border-radius: 14px;
+  line-height: 1.45;
+}
+
+.chat-balao p {
+  margin: 0;
+}
+
+.chat-balao-hora {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  opacity: 0.75;
+}
+
+.chat-balao-outro {
+  align-self: flex-start;
+  border: 1px solid var(--line);
+  background: #fff;
+}
+
+.chat-balao-eu {
+  align-self: flex-end;
+  background: var(--green);
+  color: #fff;
+}
+
+.chat-form {
+  display: flex;
+  gap: 8px;
+}
+
+.chat-form input {
+  flex: 1;
+}
+
+.briefing-form {
+  display: grid;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.briefing-form > button {
+  min-height: 46px;
+  padding: 0 18px;
+  border-radius: 6px;
+  background: var(--green);
+  color: #fff;
+  font-weight: 800;
 }
