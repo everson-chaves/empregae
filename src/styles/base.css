@@ -1252,3 +1252,46 @@ textarea:focus {
 .auth-toggle-identificador .category-button {
   flex: 1;
 }
+
+/* E02 — Meu perfil (formulário do anúncio) e página pública. */
+.anuncio-foto {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.anuncio-foto-botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  cursor: pointer;
+}
+
+.campo-rotulo {
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--muted);
+}
+
+.anuncio-cep-linha {
+  display: flex;
+  gap: 8px;
+}
+
+.anuncio-cep-linha input {
+  flex: 1;
+}
+
+.anuncio-endereco-confirmado {
+  margin: -8px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.anuncio-status {
+  margin-top: 16px;
+  display: grid;
+  gap: 10px;
+}
