@@ -156,6 +156,33 @@ export type Database = {
           },
         ]
       }
+      busca_avisos: {
+        Row: {
+          categoria_slug: string | null
+          criado_em: string
+          email: string
+          id: string
+          lat: number
+          lon: number
+        }
+        Insert: {
+          categoria_slug?: string | null
+          criado_em?: string
+          email: string
+          id?: string
+          lat: number
+          lon: number
+        }
+        Update: {
+          categoria_slug?: string | null
+          criado_em?: string
+          email?: string
+          id?: string
+          lat?: number
+          lon?: number
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           icone: string | null
@@ -380,6 +407,39 @@ export type Database = {
           },
         ]
       }
+      search_logs: {
+        Row: {
+          categoria_slug: string | null
+          criado_em: string
+          id: string
+          lat: number
+          lon: number
+          numero_resultados: number
+          raio_maximo_km: number | null
+          usuario_id: string | null
+        }
+        Insert: {
+          categoria_slug?: string | null
+          criado_em?: string
+          id?: string
+          lat: number
+          lon: number
+          numero_resultados: number
+          raio_maximo_km?: number | null
+          usuario_id?: string | null
+        }
+        Update: {
+          categoria_slug?: string | null
+          criado_em?: string
+          id?: string
+          lat?: number
+          lon?: number
+          numero_resultados?: number
+          raio_maximo_km?: number | null
+          usuario_id?: string | null
+        }
+        Relationships: []
+      }
       verifications: {
         Row: {
           created_at: string
@@ -528,6 +588,32 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      buscar_profissionais: {
+        Args: {
+          p_categoria_slug?: string
+          p_lat: number
+          p_limite?: number
+          p_lon: number
+          p_offset?: number
+          p_raio_maximo_km?: number
+        }
+        Returns: {
+          avatar_url: string
+          bairro: string
+          categorias: string[]
+          cidade: string
+          descricao: string
+          distancia_km: number
+          nome: string
+          preco_medio_centavos: number
+          profile_id: string
+          raio_atendimento_km: number
+          uf: string
+          unidade_preco: Database["public"]["Enums"]["unidade_preco"]
+          verificado_ate: string
+          worker_profile_id: string
+        }[]
+      }
       eh_admin: { Args: never; Returns: boolean }
       eh_cliente_da_conversa: {
         Args: { id_conversa: string }

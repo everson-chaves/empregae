@@ -1252,3 +1252,81 @@ textarea:focus {
 .auth-toggle-identificador .category-button {
   flex: 1;
 }
+
+/* E02 — Meu perfil (formulário do anúncio) e página pública. */
+.anuncio-foto {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.anuncio-foto-botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  cursor: pointer;
+}
+
+.campo-rotulo {
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--muted);
+}
+
+.anuncio-cep-linha {
+  display: flex;
+  gap: 8px;
+}
+
+.anuncio-cep-linha input {
+  flex: 1;
+}
+
+.anuncio-endereco-confirmado {
+  margin: -8px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.anuncio-status {
+  margin-top: 16px;
+  display: grid;
+  gap: 10px;
+}
+
+/* E03 — Busca (Busca.tsx). Página própria: reaproveita .address-field,
+   .suggestions, .suggestion-button, .location-preview (já existiam pro
+   widget de endereço), .workers-grid/.worker-card/.tag* (já existiam pros
+   resultados) e .empty-state -- só a grade do formulário é nova, porque
+   .search-panel foi desenhado pra barra de busca compacta da home, não
+   pra um formulário com filtro de categoria e raio embutidos. */
+.busca-pagina {
+  display: grid;
+  gap: 24px;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 24px 20px 48px;
+}
+
+.busca-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.busca-form .full {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 640px) {
+  .busca-form {
+    grid-template-columns: 1fr;
+  }
+}
