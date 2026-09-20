@@ -1252,3 +1252,18 @@ textarea:focus {
 .auth-toggle-identificador .category-button {
   flex: 1;
 }
+
+/* T01.4 — link "Esqueci minha senha" logo abaixo do campo de senha, no
+   login. Mesma cor de link do rodapé (.auth-rodape a), só alinhado à
+   direita e mais discreto por não ter texto ao redor. */
+.auth-esqueci-senha {
+  grid-column: 1 / -1;
+  margin: -6px 0 0;
+  text-align: right;
+  font-size: 12px;
+}
+
+.auth-esqueci-senha a {
+  color: var(--muted);
+  font-weight: 700;
+}
