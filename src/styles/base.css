@@ -1252,3 +1252,40 @@ textarea:focus {
 .auth-toggle-identificador .category-button {
   flex: 1;
 }
+
+/* T01.6 — três opções de tipo de perfil no onboarding. Reaproveita
+   .category-button/.is-active (mesmo padrão do toggle de e-mail/telefone
+   no cadastro), mas em cartão vertical -- cada opção tem título e uma
+   linha de explicação, não cabe no pill de uma linha só. */
+.onboarding-tipo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 8px;
+}
+
+.onboarding-tipo .category-button {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  white-space: normal;
+  border-radius: 10px;
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.onboarding-tipo .category-button small {
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.onboarding-consentimento {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.onboarding-consentimento input {
+  margin-top: 3px;
+}
