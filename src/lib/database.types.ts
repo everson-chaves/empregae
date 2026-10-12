@@ -59,39 +59,61 @@ export type Database = {
       }
       bookings: {
         Row: {
+          cancelado_por: string | null
           concluido_em: string | null
           concluido_por: string | null
+          confirmado_cliente_em: string | null
+          confirmado_profissional_em: string | null
           conversation_id: string
           created_at: string
           data_servico: string
           id: string
+          motivo_cancelamento: string | null
+          proposto_por: string | null
           status: Database["public"]["Enums"]["status_booking"]
           updated_at: string
           valor_combinado_centavos: number
         }
         Insert: {
+          cancelado_por?: string | null
           concluido_em?: string | null
           concluido_por?: string | null
+          confirmado_cliente_em?: string | null
+          confirmado_profissional_em?: string | null
           conversation_id: string
           created_at?: string
           data_servico: string
           id?: string
+          motivo_cancelamento?: string | null
+          proposto_por?: string | null
           status?: Database["public"]["Enums"]["status_booking"]
           updated_at?: string
           valor_combinado_centavos: number
         }
         Update: {
+          cancelado_por?: string | null
           concluido_em?: string | null
           concluido_por?: string | null
+          confirmado_cliente_em?: string | null
+          confirmado_profissional_em?: string | null
           conversation_id?: string
           created_at?: string
           data_servico?: string
           id?: string
+          motivo_cancelamento?: string | null
+          proposto_por?: string | null
           status?: Database["public"]["Enums"]["status_booking"]
           updated_at?: string
           valor_combinado_centavos?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "bookings_cancelado_por_fkey"
+            columns: ["cancelado_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "bookings_concluido_por_fkey"
             columns: ["concluido_por"]
@@ -104,6 +126,13 @@ export type Database = {
             columns: ["conversation_id"]
             isOneToOne: false
             referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_proposto_por_fkey"
+            columns: ["proposto_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]

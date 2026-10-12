@@ -1435,6 +1435,105 @@ textarea:focus {
   flex: 1;
 }
 
+/* E05 — Contratação (Conversa.tsx: cartão embutido; Contratacoes.tsx:
+   histórico). Reaproveita .briefing-form, .ghost-button, .form-alerta,
+   .empty-state, .conversas-lista/.conversa-item (já existiam pro E04) --
+   só o que é específico do ciclo de status nasce aqui. */
+.contratacao-card {
+  display: grid;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #f7f9f5;
+}
+
+.contratacao-card-topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.contratacao-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.contratacao-status-proposto {
+  background: var(--mint);
+  color: var(--green-dark);
+}
+
+.contratacao-status-aceito {
+  background: var(--blue-soft);
+  color: var(--blue);
+}
+
+.contratacao-status-concluido {
+  background: var(--green);
+  color: #fff;
+}
+
+.contratacao-status-cancelado {
+  background: #f3e7e0;
+  color: var(--terracotta);
+}
+
+.contratacao-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.danger-button {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--terracotta);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--terracotta);
+  font-weight: 800;
+}
+
+.contratacao-card-link {
+  margin: 0;
+  font-size: 13px;
+}
+
+.contratacoes-resumo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--mint);
+}
+
+.contratacoes-resumo span {
+  color: var(--green-dark);
+  font-size: 13px;
+}
+
+.contratacoes-resumo strong {
+  font-size: 20px;
+}
+
+.contratacoes-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
 .briefing-form {
   display: grid;
   gap: 14px;
