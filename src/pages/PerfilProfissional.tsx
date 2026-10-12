@@ -1,8 +1,9 @@
 import { type FormEvent, useEffect, useRef, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { buscarAnuncioPublico, formatarPreco, type AnuncioPublico } from '../lib/anuncio'
 import { useSessao } from '../lib/auth'
 import { abrirOuEncontrarConversa } from '../lib/chat'
+import { denunciarProfissional, temSeloAtivo } from '../lib/verificacao'
 import { ErroDeAplicacao } from '../lib/erros'
 
 type Estado = 'carregando' | 'encontrado' | 'nao-encontrado' | 'erro'
@@ -121,6 +122,79 @@ function BriefingModal({ nomeProfissional, onFechar, onEnviar }: BriefingModalPr
   )
 }
 
+type DenunciaModalProps = {
+  nomeProfissional: string
+  onFechar: () => void
+  onEnviar: (motivo: string) => Promise<void>
+}
+
+/** T07.6 — canal de denúncia. Mesmo padrão de <dialog> do BriefingModal. */
+function DenunciaModal({ nomeProfissional, onFechar, onEnviar }: DenunciaModalProps) {
+  const dialogRef = useRef<HTMLDialogElement | null>(null)
+  const [motivo, setMotivo] = useState('')
+  const [erro, setErro] = useState<string | null>(null)
+  const [enviando, setEnviando] = useState(false)
+  const [enviado, setEnviado] = useState(false)
+
+  useEffect(() => {
+    dialogRef.current?.showModal()
+  }, [])
+
+  function fechar() {
+    dialogRef.current?.close()
+    onFechar()
+  }
+
+  async function aoEnviar(evento: FormEvent) {
+    evento.preventDefault()
+    const texto = motivo.trim()
+    if (texto.length < 10) {
+      setErro('Descreva em pelo menos 10 caracteres o que você quer denunciar.')
+      return
+    }
+    setErro(null)
+    setEnviando(true)
+    try {
+      await onEnviar(texto)
+      setEnviado(true)
+    } catch (erroCapturado) {
+      setErro(erroCapturado instanceof ErroDeAplicacao ? erroCapturado.message : 'Não foi possível enviar a denúncia. Tente de novo.')
+    } finally {
+      setEnviando(false)
+    }
+  }
+
+  return (
+    <dialog ref={dialogRef} className="profile-modal" onClose={onFechar}>
+      <div className="profile-detail">
+        <button type="button" className="close-button" onClick={fechar} aria-label="Fechar">
+          ×
+        </button>
+        <h2>Denunciar {nomeProfissional}</h2>
+
+        {enviado ? (
+          <p>Denúncia enviada. O time do Empregaê vai analisar — obrigado por avisar.</p>
+        ) : (
+          <form className="briefing-form" onSubmit={aoEnviar}>
+            <p>
+              Use este canal para reportar algo preocupante neste profissional, mesmo que ele esteja verificado — o
+              selo não cobre tudo (<Link to="/verificacao/escopo">veja o que é checado</Link>).
+            </p>
+            {erro && <p className="form-alerta">{erro}</p>}
+            <label>
+              O que você quer denunciar?
+              <textarea value={motivo} onChange={(evento) => setMotivo(evento.target.value)} rows={4} />
+            </label>
+            <button type="submit" disabled={enviando}>
+              {enviando ? 'Enviando…' : 'Enviar denúncia'}
+            </button>
+          </form>
+        )}
+      </div>
+    </dialog>
+  )
+}
+
 export default function PerfilProfissional() {
   const { id } = useParams<{ id: string }>()
   const navegar = useNavigate()
@@ -129,6 +203,7 @@ export default function PerfilProfissional() {
   const [estado, setEstado] = useState<Estado>('carregando')
   const [dados, setDados] = useState<AnuncioPublico | null>(null)
   const [modalAberto, setModalAberto] = useState(false)
+  const [denunciaAberta, setDenunciaAberta] = useState(false)
 
   useEffect(() => {
     if (!id) return
@@ -168,7 +243,7 @@ export default function PerfilProfissional() {
   }
 
   const { perfil, anuncio, categorias } = dados
-  const selo = anuncio.verificado_ate && new Date(anuncio.verificado_ate) >= new Date()
+  const selo = temSeloAtivo(anuncio.verificado_ate)
   const souEsteProfissional = sessao?.user.id === perfil.id
 
   function aoClicarIniciarConversa() {
@@ -187,6 +262,10 @@ export default function PerfilProfissional() {
       ...(dataDesejada ? { dataDesejada } : {}),
     })
     navegar(`/conversas/${conversa.id}`)
+  }
+
+  async function aoEnviarDenuncia(motivo: string) {
+    await denunciarProfissional({ workerProfileId: anuncio.id, motivo, reporterId: sessao?.user.id })
   }
 
   return (
@@ -239,10 +318,22 @@ export default function PerfilProfissional() {
             </button>
           )}
         </div>
+
+        {!souEsteProfissional && (
+          <p className="profile-denuncia-link">
+            <button type="button" className="link-button" onClick={() => setDenunciaAberta(true)}>
+              Denunciar este profissional
+            </button>
+          </p>
+        )}
       </article>
 
       {modalAberto && (
         <BriefingModal nomeProfissional={perfil.nome} onFechar={() => setModalAberto(false)} onEnviar={aoEnviarBriefing} />
+      )}
+
+      {denunciaAberta && (
+        <DenunciaModal nomeProfissional={perfil.nome} onFechar={() => setDenunciaAberta(false)} onEnviar={aoEnviarDenuncia} />
       )}
     </section>
   )

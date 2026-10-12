@@ -1635,3 +1635,19 @@ textarea:focus {
 .onboarding-consentimento input {
   margin-top: 3px;
 }
+
+/* E07 — Verificação e selo (PerfilProfissional.tsx: botão de denúncia; o
+   badge "Verificado" já existia como .tag-featured, E02). */
+.link-button {
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--blue);
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.profile-denuncia-link {
+  margin-top: 10px;
+  font-size: 13px;
+}

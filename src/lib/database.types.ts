@@ -615,6 +615,48 @@ export type Database = {
           },
         ]
       }
+      worker_reports: {
+        Row: {
+          created_at: string
+          id: string
+          motivo: string
+          reporter_id: string | null
+          resolvida: boolean
+          worker_profile_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          motivo: string
+          reporter_id?: string | null
+          resolvida?: boolean
+          worker_profile_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          motivo?: string
+          reporter_id?: string | null
+          resolvida?: boolean
+          worker_profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "worker_reports_reporter_id_fkey"
+            columns: ["reporter_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "worker_reports_worker_profile_id_fkey"
+            columns: ["worker_profile_id"]
+            isOneToOne: false
+            referencedRelation: "worker_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -655,6 +697,14 @@ export type Database = {
       participa_da_conversa: { Args: { id_conversa: string }; Returns: boolean }
       pode_avaliar: { Args: { id_booking: string }; Returns: boolean }
       telefone_do_par: { Args: { id_conversa: string }; Returns: string }
+      verificacoes_expirando_em: {
+        Args: { dias: number }
+        Returns: {
+          profile_id: string
+          verificado_ate: string
+          worker_profile_id: string
+        }[]
+      }
     }
     Enums: {
       status_booking: "proposto" | "aceito" | "concluido" | "cancelado"
