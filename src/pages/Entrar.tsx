@@ -5,7 +5,7 @@ import { ErroDeAplicacao } from '../lib/erros'
 
 type Campo = 'identificador' | 'senha'
 
-type EstadoDeOrigem = { de?: string }
+type EstadoDeOrigem = { de?: string; senhaRedefinida?: boolean }
 
 // T01.1 — Login por e-mail e senha.
 // T01.2 — O mesmo campo aceita telefone também (sem SMS, mapeado por baixo
@@ -19,6 +19,10 @@ export default function Entrar() {
   // home. Sem isto, clicar num link protegido e logar te joga pra "/" e você
   // perde o que estava tentando abrir.
   const destinoAposLogin = (local.state as EstadoDeOrigem | null)?.de ?? '/'
+  // T01.4 — RedefinirSenha.tsx manda pra cá depois de trocar a senha,
+  // passando este flag no state para uma confirmação amigável em vez de só
+  // cair na tela de login sem explicação.
+  const vemDeRedefinicaoDeSenha = Boolean((local.state as EstadoDeOrigem | null)?.senhaRedefinida)
 
   const [identificador, setIdentificador] = useState('')
   const [senha, setSenha] = useState('')
@@ -59,6 +63,9 @@ export default function Entrar() {
         <h1>Entrar</h1>
         <p className="auth-subtitulo">Bom te ver de novo.</p>
 
+        {vemDeRedefinicaoDeSenha && !erroGeral && (
+          <p className="form-aviso">Senha alterada. Entre com a senha nova.</p>
+        )}
         {erroGeral && <p className="form-alerta">{erroGeral}</p>}
 
         <label className="full">
@@ -84,6 +91,9 @@ export default function Entrar() {
           />
         </label>
         {erros.senha && <p className="campo-erro full">{erros.senha}</p>}
+        <p className="full auth-esqueci-senha">
+          <Link to="/esqueci-senha">Esqueci minha senha</Link>
+        </p>
 
         <button type="submit" disabled={enviando}>
           {enviando ? 'Entrando…' : 'Entrar'}
