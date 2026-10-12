@@ -252,6 +252,7 @@ export type Database = {
           conversation_id: string
           created_at: string
           id: string
+          lembrete_enviado_em: string | null
           read_at: string | null
           sender_id: string
         }
@@ -260,6 +261,7 @@ export type Database = {
           conversation_id: string
           created_at?: string
           id?: string
+          lembrete_enviado_em?: string | null
           read_at?: string | null
           sender_id: string
         }
@@ -268,6 +270,7 @@ export type Database = {
           conversation_id?: string
           created_at?: string
           id?: string
+          lembrete_enviado_em?: string | null
           read_at?: string | null
           sender_id?: string
         }
@@ -283,6 +286,73 @@ export type Database = {
             foreignKeyName: "messages_sender_id_fkey"
             columns: ["sender_id"]
             isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_events: {
+        Row: {
+          created_at: string
+          dados: Json
+          id: string
+          processado_em: string | null
+          profile_id: string
+          tipo: Database["public"]["Enums"]["tipo_evento_notificacao"]
+        }
+        Insert: {
+          created_at?: string
+          dados?: Json
+          id?: string
+          processado_em?: string | null
+          profile_id: string
+          tipo: Database["public"]["Enums"]["tipo_evento_notificacao"]
+        }
+        Update: {
+          created_at?: string
+          dados?: Json
+          id?: string
+          processado_em?: string | null
+          profile_id?: string
+          tipo?: Database["public"]["Enums"]["tipo_evento_notificacao"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_events_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_preferences: {
+        Row: {
+          desinscricao_token: string
+          email_ativo: boolean
+          profile_id: string
+          push_ativo: boolean
+          updated_at: string
+        }
+        Insert: {
+          desinscricao_token?: string
+          email_ativo?: boolean
+          profile_id: string
+          push_ativo?: boolean
+          updated_at?: string
+        }
+        Update: {
+          desinscricao_token?: string
+          email_ativo?: boolean
+          profile_id?: string
+          push_ativo?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_preferences_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: true
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -364,6 +434,41 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      push_subscriptions: {
+        Row: {
+          auth_chave: string
+          created_at: string
+          endpoint: string
+          id: string
+          p256dh: string
+          profile_id: string
+        }
+        Insert: {
+          auth_chave: string
+          created_at?: string
+          endpoint: string
+          id?: string
+          p256dh: string
+          profile_id: string
+        }
+        Update: {
+          auth_chave?: string
+          created_at?: string
+          endpoint?: string
+          id?: string
+          p256dh?: string
+          profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "push_subscriptions_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       reviews: {
         Row: {
@@ -591,6 +696,26 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      desinscrever_email: {
+        Args: { p_token: string }
+        Returns: boolean
+      }
+      enfileirar_avisos_expiracao: {
+        Args: { p_dias?: number }
+        Returns: number
+      }
+      enfileirar_evento_notificacao: {
+        Args: {
+          p_dados?: Json
+          p_profile_id: string
+          p_tipo: Database["public"]["Enums"]["tipo_evento_notificacao"]
+        }
+        Returns: undefined
+      }
+      enfileirar_lembretes_mensagem_sem_resposta: {
+        Args: never
+        Returns: number
+      }
       buscar_profissionais: {
         Args: {
           p_categoria_slug?: string
@@ -632,6 +757,15 @@ export type Database = {
       status_boost: "pendente" | "ativo" | "expirado" | "cancelado"
       status_pagamento: "pendente" | "pago" | "falhou" | "estornado"
       status_verificacao: "pendente" | "aprovado" | "reprovado"
+      tipo_evento_notificacao:
+        | "mensagem_nova"
+        | "contratacao_proposta"
+        | "contratacao_aceita"
+        | "contratacao_concluida"
+        | "verificacao_aprovada"
+        | "verificacao_reprovada"
+        | "verificacao_expirando"
+        | "mensagem_sem_resposta"
       tipo_pagamento: "verificacao" | "boost" | "b2b"
       tipo_perfil: "cliente" | "profissional" | "ambos"
       unidade_preco: "hora" | "diaria" | "servico"
@@ -769,6 +903,16 @@ export const Constants = {
       status_boost: ["pendente", "ativo", "expirado", "cancelado"],
       status_pagamento: ["pendente", "pago", "falhou", "estornado"],
       status_verificacao: ["pendente", "aprovado", "reprovado"],
+      tipo_evento_notificacao: [
+        "mensagem_nova",
+        "contratacao_proposta",
+        "contratacao_aceita",
+        "contratacao_concluida",
+        "verificacao_aprovada",
+        "verificacao_reprovada",
+        "verificacao_expirando",
+        "mensagem_sem_resposta",
+      ],
       tipo_pagamento: ["verificacao", "boost", "b2b"],
       tipo_perfil: ["cliente", "profissional", "ambos"],
       unidade_preco: ["hora", "diaria", "servico"],

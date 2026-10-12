@@ -41,6 +41,11 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,woff2}'],
 
+        // T08.2 — injeta o listener de Web Push (public/push-sw.js) dentro
+        // do service worker gerado pelo Workbox, sem trocar de estratégia
+        // de build (generateSW continua cuidando do precache normal).
+        importScripts: ['push-sw.js'],
+
         // O hero tem 2,3 MB e fica FORA do precache de propósito. Precachear
         // significa baixar tudo na instalação do PWA, antes da primeira tela —
         // e o público-alvo acessa por dados móveis. Ele é cacheado abaixo, na
