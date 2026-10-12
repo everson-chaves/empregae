@@ -52,46 +52,54 @@ Os nove itens essenciais da v1, mais uma epic de fundação na frente e uma de g
 
 ## 3. Custos
 
-Valores levantados a partir de conhecimento até ~maio/2026. **Não foram verificados em fonte ao vivo.** A task T00.9 é justamente confirmar cada linha antes de qualquer compromisso.
+**Atualizado em 20/09/2026 (T00.9).** Os valores abaixo foram confirmados em fonte ao vivo (site oficial de cada provedor) nesta data — substituem os números de conhecimento até maio/2026 da versão anterior deste documento. Câmbio usado como referência onde necessário: USD 1 ≈ R$ 5,16 (PTAX, 20/09/2026) — consultar cotação atual antes de qualquer compromisso financeiro, o câmbio muda.
 
 ### 3.1 Gratuito
 
-| Tecnologia | Limite relevante no free tier |
+| Tecnologia | Limite confirmado no free tier |
 |---|---|
-| Supabase Free | 500 MB Postgres · 1 GB storage · 5 GB banda/mês · 50k usuários ativos · Realtime e Edge Functions inclusos |
+| Supabase Free | 500 MB Postgres · 1 GB storage · 5 GB egress + 5 GB cached egress/mês · 50.000 usuários ativos mensais · Realtime incluso (200 conexões simultâneas, 2 milhões de mensagens/mês) · Edge Functions inclusas (500.000 invocações/mês) |
 | PostGIS | Extensão nativa do Postgres, open source |
 | React + Vite | — |
 | Vercel / Netlify / Cloudflare Pages | Free tier cobre tráfego de piloto com folga |
 | ViaCEP | Sem chave, sem limite prático |
 | Web Push (VAPID) | Padrão do navegador, não passa por serviço pago |
-| Resend / SendGrid | 3.000 e-mails/mês (Resend) · 100/dia (SendGrid) |
+| Mapbox Geocoding | **100.000 requisições/mês grátis** (confirmado — bem acima do estimado antes) |
+| LocationIQ | **5.000 requisições/dia grátis**, limite de 2 req/segundo, uso comercial exige link de atribuição |
+| Resend | **100 e-mails/dia · 3.000 e-mails/mês** |
+| SendGrid | **100 e-mails/dia, mas só por 60 dias** — o plano free não é mais permanente (mudou desde a versão anterior deste doc). Depois disso, o e-mail transacional obrigatoriamente vira Resend ou plano pago. |
 | PWA / service worker | — |
 
-**Duas pegadinhas do Supabase Free:** o projeto pausa após ~1 semana sem atividade (fatal se pausar na véspera da defesa) e não há backup diário. A partir do mês 4 recomenda-se o Pro (~US$ 25/mês).
+**Duas pegadinhas do Supabase Free, confirmadas:** o projeto pausa após **1 semana sem atividade** (fatal se pausar na véspera da defesa) — e o limite é de **2 projetos free ativos por conta**, o que é justo o bastante para separar dev e prod (T00.1), mas não sobra margem para um terceiro projeto de teste. Não há backup diário no free. A partir do mês 4 recomenda-se o Pro.
 
 ### 3.2 Pago
 
-| Item | Custo estimado | Quando |
+| Item | Custo confirmado | Quando |
 |---|---|---|
-| Supabase Pro | ~US$ 25/mês | Meses 4–6 (piloto no ar) |
+| Supabase Pro | **US$ 25/mês** (1º projeto incluso; projeto adicional a partir de US$ 10/mês) ≈ R$ 129/mês | Meses 4–6 (piloto no ar) |
 | Domínio .com.br | ~R$ 40/ano | Mês 4 |
-| Geocoding acima do free tier | Provavelmente R$ 0 | Ver 3.3 |
-| Consulta de antecedentes | R$ 10–25 por consulta | Operacional, manual, fora do sistema |
-| SMS para OTP | R$ 0,08–0,15 (nacional) · US$ 0,05–0,08 (Twilio) | **Fora do MVP1** |
+| Geocoding acima do free tier (Mapbox) | US$ 0,75 por 1.000 requisições (100k–500k/mês) · US$ 0,60 por 1.000 (500k–1M) · US$ 0,45 por 1.000 (acima de 1M) | Só se estourar 100k/mês — improvável no piloto |
+| E-mail acima do free tier (Resend Pro) | US$ 20/mês por 50.000 e-mails · US$ 0,90 por 1.000 extras | Só se estourar 3.000/mês |
+| Consulta de antecedentes | **Preço não é público em nenhum dos provedores privados pesquisados** (Infosimples, API Consultas, BGC Brasil) — todos pedem contato comercial para cotar. A API gratuita do governo (gov.br Conecta) **é restrita a órgão público federal e estadual, não atende empresa privada** — não é opção para o Empregaê. Mantemos a faixa R$ 10–25/consulta como estimativa não confirmada até alguém do grupo pedir a cotação real (ver questão em aberto na seção 9). |
+| SMS para OTP — Comtele | R$ 0,12/SMS na faixa de 500 mensagens (cai com volume) · R$ 1,00 de crédito teste (~10 SMS) | **Fora do MVP1** |
+| SMS para OTP — Zenvia | US$ 0,0184/SMS no pacote de US$ 20 até US$ 0,0129/SMS no pacote de US$ 400 (≈ R$ 0,067–R$ 0,095/SMS) — preço em BRL não é público, só por pacote em USD | **Fora do MVP1** |
 | Pix (Mercado Pago / Asaas) | — | **Fora do MVP1** |
 
 ### 3.3 A armadilha do geocoding
 
-O Nominatim público é gratuito, mas a política de uso **proíbe autocomplete pesado** (1 requisição por segundo, User-Agent identificável). A busca "estilo Maps" que existe no protótipo atual não cabe ali. Alternativas com free tier suficiente para o piloto: **Mapbox** (~100k requisições/mês), **LocationIQ** (5k/dia), ou self-host do Nominatim. Decisão em T03.2.
+Confirmado: o Nominatim público é gratuito, mas a política de uso **proíbe autocomplete pesado** (1 requisição por segundo, User-Agent identificável) — a busca "estilo Maps" do protótipo atual não cabe ali.
+
+Com os números confirmados, a decisão fica mais fácil do que parecia em 21/08: o **Mapbox tem free tier de 100.000 requisições/mês** — muito maior que o estimado antes — e cobre a busca do piloto inteiro sem custo. A LocationIQ é mais restrita (5.000/dia = ~150.000/mês, mas com teto de 2 req/segundo, que pode apertar em autocomplete). **Recomendação para a T03.2: Mapbox**, justamente pelo teto mensal folgado; decisão final continua sendo do Dev B, que integra.
 
 ### 3.4 Total estimado
 
 | Fase | Custo |
 |---|---|
-| Meses 1–3 (desenvolvimento) | **R$ 0** |
-| Meses 4–6 (piloto no ar) | Supabase Pro ~R$ 400 · domínio R$ 40 |
-| **Total do MVP1** | **≈ R$ 450**, fora as consultas de antecedentes (que se pagam com a receita de verificação) |
+| Meses 1–3 (desenvolvimento) | **R$ 0** (dentro dos free tiers confirmados acima, inclusive geocoding) |
+| Meses 4–6 (piloto no ar) | Supabase Pro ≈ R$ 387 (3 meses) · domínio R$ 40 |
+| **Total do MVP1** | **≈ R$ 430**, fora as consultas de antecedentes (preço ainda não cotado — ver 3.2) e fora qualquer estouro de free tier de e-mail/geocoding, que os números confirmados tornam pouco provável no volume do piloto |
 
+**O que mudou desde a versão de 21/08:** os limites gratuitos de Supabase, Mapbox e Resend são iguais ou maiores do que o estimado — boa notícia, sobra mais margem que o previsto. A má notícia é o SendGrid: o free tier dele deixou de ser permanente (100 e-mails/dia só por 60 dias), o que reforça a escolha do Resend como provedor de e-mail transacional (T08.1) — o Resend continua com free tier permanente. A consulta de antecedentes continua sem preço público; isso é uma questão em aberto real, não só burocracia (seção 9).
 ---
 
 ## 4. Estratégia de paralelização
