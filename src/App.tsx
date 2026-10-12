@@ -6,6 +6,8 @@ import PerfilProfissional from './pages/PerfilProfissional'
 import MeuPerfil from './pages/MeuPerfil'
 import Entrar from './pages/Entrar'
 import Cadastrar from './pages/Cadastrar'
+import EsqueciSenha from './pages/EsqueciSenha'
+import RedefinirSenha from './pages/RedefinirSenha'
 import Onboarding from './pages/Onboarding'
 import Conversas from './pages/Conversas'
 import Conversa from './pages/Conversa'
@@ -27,6 +29,11 @@ export default function App() {
         {/* E01 — Dev A */}
         <Route path="entrar" element={<Entrar />} />
         <Route path="cadastrar" element={<Cadastrar />} />
+        {/* T01.4 — sem RotaProtegida: quem chega aqui ainda não está
+            logado no sentido normal. RedefinirSenha valida o link de
+            recuperação sozinha (useRecuperacaoDeSenha). */}
+        <Route path="esqueci-senha" element={<EsqueciSenha />} />
+        <Route path="redefinir-senha" element={<RedefinirSenha />} />
         {/* T01.6 — protegida "de propósito": precisa de sessão para saber
             de quem é o perfil que está sendo completado. */}
         <Route
