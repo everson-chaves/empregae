@@ -767,10 +767,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      desinscrever_email: {
-        Args: { p_token: string }
-        Returns: boolean
-      }
+      desinscrever_email: { Args: { p_token: string }; Returns: boolean }
       enfileirar_avisos_expiracao: {
         Args: { p_dias?: number }
         Returns: number
