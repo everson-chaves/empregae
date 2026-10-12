@@ -68,7 +68,11 @@ export default function Cadastrar() {
       if (resultado.precisaConfirmarEmail) {
         setPrecisaConfirmarEmail(true)
       } else {
-        navegar('/')
+        // T01.6 — a sessão já veio pronta (telefone, ou e-mail com
+        // confirmação desligada no projeto): manda direto para o
+        // onboarding em vez de "/", em vez de deixar a pessoa completar
+        // o consentimento LGPD só na próxima vez que tentar algo protegido.
+        navegar('/onboarding')
       }
     } catch (erro) {
       setErroGeral(erro instanceof ErroDeAplicacao ? erro.message : 'Algo deu errado. Tente de novo.')
