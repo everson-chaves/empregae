@@ -767,23 +767,6 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      desinscrever_email: { Args: { p_token: string }; Returns: boolean }
-      enfileirar_avisos_expiracao: {
-        Args: { p_dias?: number }
-        Returns: number
-      }
-      enfileirar_evento_notificacao: {
-        Args: {
-          p_dados?: Json
-          p_profile_id: string
-          p_tipo: Database["public"]["Enums"]["tipo_evento_notificacao"]
-        }
-        Returns: undefined
-      }
-      enfileirar_lembretes_mensagem_sem_resposta: {
-        Args: never
-        Returns: number
-      }
       buscar_profissionais: {
         Args: {
           p_categoria_slug?: string
@@ -810,10 +793,27 @@ export type Database = {
           worker_profile_id: string
         }[]
       }
+      desinscrever_email: { Args: { p_token: string }; Returns: boolean }
       eh_admin: { Args: never; Returns: boolean }
       eh_cliente_da_conversa: {
         Args: { id_conversa: string }
         Returns: boolean
+      }
+      enfileirar_avisos_expiracao: {
+        Args: { p_dias?: number }
+        Returns: number
+      }
+      enfileirar_evento_notificacao: {
+        Args: {
+          p_dados?: Json
+          p_profile_id: string
+          p_tipo: Database["public"]["Enums"]["tipo_evento_notificacao"]
+        }
+        Returns: undefined
+      }
+      enfileirar_lembretes_mensagem_sem_resposta: {
+        Args: never
+        Returns: number
       }
       meu_telefone: { Args: never; Returns: string }
       participa_da_conversa: { Args: { id_conversa: string }; Returns: boolean }
