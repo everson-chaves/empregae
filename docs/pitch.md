@@ -1,40 +1,59 @@
-﻿# Pitch do Empregaê
+# Pitch do Empregaê
 
-## Pitch curto
+## Pitch curto (30 segundos)
 
-O **Empregaê** Ã© uma plataforma que conecta trabalhadores informais a clientes prÃ³ximos por localizaÃ§Ã£o e WhatsApp.
+O Empregaê é o classificado de serviços do bairro.
 
-Nosso objetivo Ã© transformar o boca a boca em oportunidade digital, ajudando diaristas, eletricistas, pintores, costureiras, passadeiras e outros profissionais a encontrarem mais trabalho perto de casa.
+O cliente digita o endereço, escolhe o serviço e encontra profissionais próximos dentro do raio que ele definir. Conversa pelo chat, combina o serviço, e depois avalia — e a avaliação só existe se a contratação aconteceu.
 
-O trabalhador pode criar seu perfil gratuitamente. Quem quiser mais visibilidade pode contratar um destaque opcional por R$ 9,90/mÃªs, com selo verificado, prioridade visual e perfil mais profissional.
+Para o trabalhador informal, o cadastro é gratuito e para sempre. Ele nunca paga para trabalhar. Paga só se quiser aparecer em destaque, por período, quando a agenda estiver vazia.
 
 ## Pitch de 1 minuto
 
-No Brasil, milhÃµes de trabalhadores informais dependem apenas de indicaÃ§Ã£o para conseguir renda. Muitos sÃ£o bons profissionais, mas nÃ£o tÃªm presenÃ§a digital, reputaÃ§Ã£o online ou uma forma simples de serem encontrados por clientes prÃ³ximos.
+No Brasil, dezenas de milhões de pessoas trabalham por conta própria sem carteira assinada. Diaristas, cuidadores de idosos, eletricistas, pintores, costureiras. Quase todos dependem de indicação para conseguir o próximo serviço, o que limita a renda e deixa o profissional invisível para quem acabou de se mudar para o bairro.
 
-O Empregaê resolve esse problema conectando clientes a trabalhadores informais dentro de um raio de localizaÃ§Ã£o. A pessoa digita o bairro ou endereÃ§o, escolhe o tipo de serviÃ§o e encontra profissionais prÃ³ximos para chamar pelo WhatsApp.
+O Empregaê conecta esses profissionais a clientes próximos. A pessoa busca por endereço, filtra por distância, conversa dentro da plataforma e registra a contratação. A partir daí ela pode avaliar — e como só quem contratou avalia, a reputação vale alguma coisa.
 
-Para o trabalhador, o cadastro Ã© gratuito. Ele pode aparecer na busca, receber avaliaÃ§Ãµes e construir reputaÃ§Ã£o. Como modelo de negÃ³cio, oferecemos um destaque opcional de R$ 9,90/mÃªs, com selo verificado, mais fotos, agenda e prioridade visual, sem esconder quem usa grÃ¡tis.
+Nosso modelo de receita monetiza a descoberta, nunca a transação. Não cobramos percentual do serviço, porque em serviço recorrente as duas partes acabariam combinando por fora. Cobramos por verificação de antecedentes com selo, por impulsionamento na busca — o modelo da OLX, comprado por período — e por contratos com condomínios que querem oferecer aos moradores um pool de profissionais verificados.
 
-Assim, geramos inclusÃ£o econÃ´mica, aumentamos a renda de trabalhadores informais e facilitamos a contrataÃ§Ã£o de serviÃ§os locais.
+O resultado é que o trabalhador nunca paga para trabalhar. Só para aparecer, e só quando quiser.
 
 ## Pitch de 3 minutos
 
-O Empregaê nasce para resolver uma dor comum no Brasil: trabalhadores informais precisam de clientes, e clientes precisam de profissionais confiÃ¡veis perto de casa.
+**O problema.**
 
-Hoje, diaristas, pintores, eletricistas, passadeiras, costureiras e pequenos prestadores dependem muito do boca a boca. Isso limita a renda, dificulta a organizaÃ§Ã£o da agenda e deixa muitos profissionais invisÃ­veis digitalmente.
+Quando alguém precisa de uma diarista, de um eletricista ou de um cuidador para a mãe idosa, o caminho hoje é perguntar no grupo de WhatsApp do prédio e torcer para que alguém responda. Não há busca, não há histórico, não há como saber se aquela pessoa é confiável.
 
-Do lado do cliente, tambÃ©m existe dificuldade. Quando alguÃ©m precisa de uma diarista, um eletricista ou um marido de aluguel, muitas vezes depende de grupos de WhatsApp, indicaÃ§Ã£o de vizinhos ou tentativa e erro.
+Do lado do profissional o problema é o espelho disso. Ele é bom no que faz, mas depende de indicação. Se ninguém indicar naquele mês, não há trabalho. E toda a reputação que ele construiu em dez anos de serviço mora na cabeça de alguns vizinhos — não vale nada quando ele precisa de um cliente novo.
 
-A nossa soluÃ§Ã£o Ã© simples: uma plataforma mobile-first em que o cliente digita seu bairro ou endereÃ§o, escolhe o serviÃ§o e vÃª profissionais prÃ³ximos dentro de um raio de localizaÃ§Ã£o. O contato Ã© feito pelo WhatsApp, para reduzir barreiras de uso.
+**A solução.**
 
-O trabalhador cria um perfil gratuito, com nome, serviÃ§o, regiÃ£o de atendimento, preÃ§o mÃ©dio, descriÃ§Ã£o e avaliaÃ§Ãµes. No futuro, a inteligÃªncia artificial pode ajudar esse profissional a escrever uma descriÃ§Ã£o melhor, sugerir preÃ§o justo, organizar agenda e melhorar sua comunicaÃ§Ã£o com clientes.
+O Empregaê é uma plataforma mobile-first onde o cliente digita o endereço, escolhe o tipo de serviço e vê quem atende naquela região dentro do raio que ele escolher. A conversa acontece no chat da própria plataforma, e é ali que os dois combinam preço, data e detalhes.
 
-Nosso modelo de negÃ³cio respeita a proposta social: o trabalhador sempre pode aparecer gratuitamente. A monetizaÃ§Ã£o vem de um plano de destaque opcional, por R$ 9,90/mÃªs, que oferece selo verificado, prioridade visual, mais fotos, agenda e descriÃ§Ã£o melhorada com IA.
+Quando o serviço termina, a contratação é marcada como concluída. Só então a avaliação é liberada. Essa trava é o coração do produto: em qualquer marketplace de serviços, a reputação é o ativo, e reputação que qualquer um pode escrever não vale nada.
 
-O Empregaê impacta diretamente os ODS da ONU, especialmente trabalho decente, reduÃ§Ã£o das desigualdades e erradicaÃ§Ã£o da pobreza.
+**O modelo de negócio.**
 
-Mais do que um app de serviÃ§os, queremos criar uma ponte entre tecnologia e oportunidade real para quem mais precisa.
+Aqui tomamos uma decisão contraintuitiva. Não cobramos percentual sobre o serviço.
 
+O motivo é prático. Serviço local se repete entre as mesmas duas pessoas — a diarista volta toda semana na mesma casa. Se cobrássemos a cada visita, no segundo mês os dois combinariam por fora, e a plataforma viraria inimiga dos dois lados. Empresas maiores que a nossa já tentaram e recuaram.
 
+Então monetizamos o que não pode ser combinado por fora: a descoberta.
 
+São quatro camadas. **Verificação** de documento e antecedentes, com selo anual — e cobramos porque a consulta custa dinheiro de verdade, não porque estamos vendendo um adesivo de confiança. **Impulsionamento**, que é posição de destaque na busca comprada por período, como na OLX. **Contratos com condomínios**, que pagam para dar aos moradores um pool verificado. E, no horizonte, **serviços financeiros** para uma base de trabalhadores hoje desbancarizada — seguro de serviço e antecipação de recebíveis.
+
+As duas primeiras camadas não dependem de tráfego, e é isso que sustenta a operação enquanto a rede ainda está pequena.
+
+**Por que cobrar por período em vez de mensalidade.**
+
+Trabalhador informal tem renda que oscila. Mensalidade fixa é a primeira coisa cortada no mês ruim — e é assim que se constrói churn alto e ressentimento. Cobrança avulsa se autorregula: quem está com a agenda cheia não compra nada; quem está sem trabalho investe sete reais para aparecer na frente por uma semana.
+
+**Onde começamos.**
+
+O produto é nacional desde o primeiro dia, mas a operação começa concentrada em uma região. Valor de marketplace é local: um cliente em Recife não ganha nada com um eletricista em Porto Alegre. Cem profissionais espalhados pelo país devolvem tela vazia em toda busca. Os mesmos cem concentrados devolvem doze resultados, e aí o produto funciona de verdade.
+
+**O impacto.**
+
+O desenho todo parte de uma escolha: não monetizar o lado mais vulnerável do marketplace. O trabalhador entra de graça, aparece de graça e recebe clientes de graça. Isso conecta diretamente com os ODS de trabalho decente, redução das desigualdades e erradicação da pobreza — não como discurso de apresentação, mas como consequência de como o modelo foi construído.
+
+O Empregaê transforma indicação de bairro em reputação digital que o trabalhador carrega consigo.

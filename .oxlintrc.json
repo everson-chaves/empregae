@@ -1,0 +1,15 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "typescript", "unicorn", "oxc"],
+  "env": { "browser": true, "es2024": true },
+  "ignorePatterns": ["legado/**", "dist/**", "src/lib/database.types.ts"],
+  "rules": {
+    "no-console": ["warn", { "allow": ["warn", "error"] }],
+    "no-debugger": "error",
+    "eqeqeq": "error",
+    "no-unused-vars": "error",
+    "react/jsx-key": "error",
+    "react/no-danger": "error",
+    "typescript/no-explicit-any": "warn"
+  }
+}

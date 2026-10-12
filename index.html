@@ -2,218 +2,23 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Empregaê</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#183c34" />
+    <title>Empregaê — o classificado de serviços do bairro</title>
     <meta
       name="description"
-      content="Encontre profissionais informais perto do seu endereço e faça pré-agendamentos com match por serviço."
+      content="Encontre profissionais perto de você. Cadastro gratuito para quem presta serviço."
     />
-    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo-empregae.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <header class="topbar">
-      <a class="brand" href="#home" aria-label="Empregaê">
-        <svg class="brand-logo" viewBox="0 0 96 96" aria-hidden="true">
-          <rect width="96" height="96" rx="26" fill="#F7F1E8" />
-          <path d="M25 23H68V36H39V45H64V57H39V73H25V23Z" fill="#183C34" />
-          <path d="M61 18C73 18 83 27.6 83 39.5C83 56.5 61 73 61 73C61 73 39 56.5 39 39.5C39 27.6 49 18 61 18Z" fill="#28B978" />
-          <circle cx="61" cy="39" r="7" fill="#F7F1E8" />
-          <path d="M22 75C32 66 43 62 55 62C64 62 72 65 80 70L73 82C67 78 61 76 55 76C45 76 38 79 30 86L22 75Z" fill="#E8A93A" />
-        </svg>
-        <span>
-          <strong>Empregaê</strong>
-          <small>Serviços perto de você</small>
-        </span>
-      </a>
-
-      <nav class="nav-actions" aria-label="Navegação principal">
-        <a href="#sobre">Projeto</a>
-        <a href="#profissionais">Profissionais</a>
-        <a href="#cadastro">Oferecer serviço</a>
-        <a href="playstore.html">App simples</a>
-      </nav>
-    </header>
-
-    <main>
-      <section class="hero" id="home">
-        <div class="hero-media" aria-hidden="true">
-          <img src="assets/hero-workers.png" alt="" />
-        </div>
-        <div class="hero-content">
-          <p class="eyebrow">Serviços informais perto de você</p>
-          <h1>Empregaê</h1>
-          <p class="hero-copy">
-            Encontre profissionais para serviços do dia a dia, faça um match pelo que você
-            precisa e envie uma solicitação de pré-agendamento. O profissional aceita em até
-            4 horas e vocês combinam os detalhes com segurança.
-          </p>
-
-          <form class="search-panel" id="searchForm" aria-label="Buscar profissionais">
-            <label>
-              Serviço
-              <select id="serviceFilter">
-                <option value="">Todos os serviços</option>
-              </select>
-            </label>
-
-            <label class="address-field">
-              Endereço ou bairro
-              <input
-                id="addressFilter"
-                type="text"
-                placeholder="Digite seu bairro, rua ou cidade"
-                autocomplete="off"
-              />
-              <div class="suggestions" id="addressSuggestions" hidden></div>
-            </label>
-
-            <label>
-              Raio
-              <select id="radiusFilter">
-                <option value="2">até 2 km</option>
-                <option value="5" selected>até 5 km</option>
-                <option value="10">até 10 km</option>
-                <option value="20">até 20 km</option>
-              </select>
-            </label>
-
-            <button type="submit">Buscar match</button>
-          </form>
-          <div class="location-preview" id="locationPreview" hidden></div>
-        </div>
-      </section>
-
-      <section class="project-info" id="sobre">
-        <div>
-          <p class="eyebrow">Sobre o projeto</p>
-          <h2>Uma ponte simples entre quem precisa de ajuda e quem sabe fazer</h2>
-          <p>
-            O Empregaê ajuda pessoas a encontrarem trabalhadores informais próximos, com
-            disponibilidade, avaliações, horários e perguntas específicas para cada serviço.
-            O trabalhador pode aparecer gratuitamente e responder solicitações de reserva.
-          </p>
-        </div>
-        <div class="info-cards">
-          <article><strong>1. Busque</strong><span>Digite bairro, rua ou cidade e escolha o serviço.</span></article>
-          <article><strong>2. Dê match</strong><span>Combinamos localização, serviço, horário e detalhes do pedido.</span></article>
-          <article><strong>3. Reserve</strong><span>O profissional aceita, recusa ou sugere outro horário em até 4 horas.</span></article>
-        </div>
-      </section>
-
-      <section class="app-layout" id="profissionais">
-        <aside class="sidebar" aria-label="Categorias">
-          <div>
-            <h2>Áreas informais</h2>
-            <p>
-              São mais de 50 tipos de serviço: casa, cuidado, beleza, reparos,
-              aulas, entrega, manutenção, fretes, tecnologia e eventos.
-            </p>
-          </div>
-          <div class="category-list" id="categoryList"></div>
-        </aside>
-
-        <section class="results-area">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow">Profissionais próximos</p>
-              <h2 id="resultsTitle">Todos os profissionais</h2>
-            </div>
-            <button class="ghost-button" id="clearFilters" type="button">Limpar filtros</button>
-          </div>
-
-          <div class="workers-grid" id="workersGrid"></div>
-        </section>
-      </section>
-
-      <section class="signup-section" id="cadastro">
-        <div class="signup-copy">
-          <p class="eyebrow">Quero trabalhar</p>
-          <h2>Cadastre um profissional e receba solicitações de reserva</h2>
-          <p>
-            O perfil gratuito aparece na busca. Quem quiser pode ativar destaque opcional
-            para selo verificado, mais fotos, agenda e melhor apresentação.
-          </p>
-          <div class="plan-box">
-            <strong>Perfil gratuito</strong>
-            <span>Aparece na busca, recebe avaliações e contato pelo WhatsApp.</span>
-            <strong>Destaque opcional - R$ 9,90/mês</strong>
-            <span>Selo verificado, prioridade visual, mais fotos, agenda e descrição com IA.</span>
-          </div>
-        </div>
-
-        <form class="signup-form" id="workerForm">
-          <label>
-            Nome
-            <input id="nameInput" type="text" placeholder="Ex: Juliana Oliveira" required />
-          </label>
-          <label>
-            WhatsApp
-            <input id="phoneInput" type="tel" placeholder="11999999999" required />
-          </label>
-          <label>
-            Serviço principal
-            <select id="serviceInput" required></select>
-          </label>
-          <label>
-            Bairro
-            <input id="neighborhoodInput" type="text" placeholder="Ex: Centro" required />
-          </label>
-          <label class="full address-field">
-            Endereço de atendimento
-            <input
-              id="workerAddressInput"
-              type="text"
-              placeholder="Comece a digitar seu endereço, bairro ou cidade"
-              autocomplete="off"
-              required
-            />
-            <div class="suggestions" id="workerAddressSuggestions" hidden></div>
-          </label>
-          <label>
-            Cidade
-            <input id="cityInput" type="text" placeholder="Sua cidade" required />
-          </label>
-          <label>
-            Preço médio
-            <input id="priceInput" type="text" placeholder="Ex: R$ 150 diária" required />
-          </label>
-          <label class="full">
-            Descreva seu trabalho
-            <textarea
-              id="bioInput"
-              rows="4"
-              placeholder="Ex: faço faxina, passo roupa e organizo apartamentos"
-              required
-            ></textarea>
-          </label>
-          <label class="full checkbox-line">
-            <input id="featuredInput" type="checkbox" />
-            Quero simular o destaque opcional de R$ 9,90/mês
-          </label>
-          <button class="secondary-button" id="aiButton" type="button">Melhorar com IA</button>
-          <button type="submit">Cadastrar perfil</button>
-        </form>
-      </section>
-    </main>
-
-    <dialog class="profile-modal" id="profileModal">
-      <button class="close-button" id="closeModal" type="button" aria-label="Fechar">×</button>
-      <div id="profileContent"></div>
-    </dialog>
-
-    <script src="app.js"></script>
-    <script>
-      if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("service-worker.js");
-      }
-    </script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
