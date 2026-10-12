@@ -196,6 +196,37 @@ export async function sair(): Promise<void> {
   lancarSeErro(error)
 }
 
+// T01.4 — Recuperação de senha.
+//
+// Só funciona para quem tem e-mail de verdade. O Supabase manda o link de
+// recuperação por e-mail — não há como mandar isso para o e-mail sintético
+// de quem se cadastrou por telefone (T01.2), porque ninguém lê aquela caixa.
+// EsqueciSenha.tsx detecta telefone (pareceTelefone) ANTES de chamar esta
+// função e mostra a limitação sem tentar a viagem de rede — ver
+// docs/recuperacao-senha.md para o runbook manual de quem cadastrou por
+// telefone e esqueceu a senha.
+//
+// `redirectTo` precisa estar na lista de allowed redirect URLs do projeto
+// Supabase (supabase/config.toml em dev; painel do projeto hosteado em
+// prod) — sem isso o link do e-mail cai num erro do GoTrue, não na tela de
+// redefinição.
+export async function solicitarRecuperacaoSenha(email: string): Promise<void> {
+  const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+    redirectTo: `${window.location.origin}/redefinir-senha`,
+  })
+  lancarSeErro(error)
+}
+
+// A pessoa chega aqui com uma sessão de recuperação já estabelecida pelo
+// próprio cliente Supabase (`detectSessionInUrl: true`, em lib/supabase.ts)
+// ao abrir o link do e-mail — não precisamos ler token nenhum da URL aqui,
+// só chamar updateUser como faria qualquer troca de senha de um usuário já
+// autenticado.
+export async function redefinirSenha(novaSenha: string): Promise<void> {
+  const { error } = await supabase.auth.updateUser({ password: novaSenha })
+  lancarSeErro(error)
+}
+
 // --- Estado de sessão ----------------------------------------------------
 // Hook mínimo para a navegação saber se há alguém logado (Layout mostra
 // "Sair" em vez de "Entrar"). Persistência, refresh e proteção de rota são
@@ -227,4 +258,38 @@ export function useSessao() {
   }, [])
 
   return { sessao, carregando }
+}
+
+// T01.4 — RedefinirSenha.tsx usa isto para saber se o link de recuperação
+// que a pessoa clicou é válido, em vez de reusar useSessao genérico: o
+// evento `PASSWORD_RECOVERY` do GoTrue é o sinal correto de "este e-mail
+// contém mesmo um token de recuperação válido", não só "existe uma sessão
+// qualquer" (alguém já logado que só abriu a URL por engano, por exemplo).
+export type EstadoDeRecuperacao = 'carregando' | 'pronto' | 'invalido'
+
+export function useRecuperacaoDeSenha(): EstadoDeRecuperacao {
+  const [estado, setEstado] = useState<EstadoDeRecuperacao>('carregando')
+
+  useEffect(() => {
+    let ativo = true
+
+    const { data: assinatura } = supabase.auth.onAuthStateChange((evento) => {
+      if (!ativo || evento !== 'PASSWORD_RECOVERY') return
+      setEstado('pronto')
+    })
+
+    // Cobre o caso de o evento já ter disparado antes deste efeito montar
+    // (ex.: `detectSessionInUrl` processou o token muito rápido).
+    supabase.auth.getSession().then(({ data }) => {
+      if (!ativo) return
+      setEstado((atual) => (atual === 'carregando' ? (data.session ? 'pronto' : 'invalido') : atual))
+    })
+
+    return () => {
+      ativo = false
+      assinatura.subscription.unsubscribe()
+    }
+  }, [])
+
+  return estado
 }
