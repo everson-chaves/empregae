@@ -1464,7 +1464,6 @@ textarea:focus {
   color: var(--muted);
   font-weight: 700;
 }
-}
 
 /* T01.6 — três opções de tipo de perfil no onboarding. Reaproveita
    .category-button/.is-active (mesmo padrão do toggle de e-mail/telefone
