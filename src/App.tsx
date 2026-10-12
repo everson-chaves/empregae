@@ -8,6 +8,7 @@ import Entrar from './pages/Entrar'
 import Cadastrar from './pages/Cadastrar'
 import EsqueciSenha from './pages/EsqueciSenha'
 import RedefinirSenha from './pages/RedefinirSenha'
+import Onboarding from './pages/Onboarding'
 import Conversas from './pages/Conversas'
 import Conversa from './pages/Conversa'
 import Contratacoes from './pages/Contratacoes'
@@ -33,6 +34,16 @@ export default function App() {
             recuperação sozinha (useRecuperacaoDeSenha). */}
         <Route path="esqueci-senha" element={<EsqueciSenha />} />
         <Route path="redefinir-senha" element={<RedefinirSenha />} />
+        {/* T01.6 — protegida "de propósito": precisa de sessão para saber
+            de quem é o perfil que está sendo completado. */}
+        <Route
+          path="onboarding"
+          element={
+            <RotaProtegida>
+              <Onboarding />
+            </RotaProtegida>
+          }
+        />
 
         {/* E02 — Dev B. Perfil público, sem login; "meu perfil" exige sessão (T01.3). */}
         <Route path="profissional/:id" element={<PerfilProfissional />} />
