@@ -13,6 +13,17 @@ import {
   type Message,
   type Briefing,
 } from '../lib/chat'
+import {
+  buscarContratacaoEmAberto,
+  proporContratacao,
+  aceitarContratacao,
+  recusarOuCancelarContratacao,
+  confirmarConclusao,
+  formatarValorContratacao,
+  formatarDataServico,
+  RUBRICA_STATUS_BOOKING,
+  type Booking,
+} from '../lib/contratacao'
 import { ErroDeAplicacao } from '../lib/erros'
 
 type Estado = 'carregando' | 'pronto' | 'nao-encontrada' | 'erro'
@@ -27,6 +38,12 @@ type Estado = 'carregando' | 'pronto' | 'nao-encontrada' | 'erro'
 // Supabase local neste ambiente. `docs/chat-teste-rls.md` documenta o
 // roteiro manual (duas contas, tentar ler a conversa da outra) pra rodar
 // localmente antes do merge.
+//
+// E05 (T05.1-T05.4) mora aqui dentro de propósito: "ação dentro da
+// conversa" (spec) — propor, aceitar/recusar, confirmar conclusão e
+// cancelar aparecem como um cartão fixo logo abaixo do briefing. Histórico e
+// métrica (T05.5/T05.6) ficam em /contratacoes — aqui só o que está em
+// aberto agora.
 function lerBriefing(bruto: unknown): Briefing | null {
   if (!bruto || typeof bruto !== 'object') return null
   const objeto = bruto as Record<string, unknown>
@@ -35,6 +52,197 @@ function lerBriefing(bruto: unknown): Briefing | null {
     resumo: objeto.resumo,
     dataDesejada: typeof objeto.dataDesejada === 'string' ? objeto.dataDesejada : undefined,
   }
+}
+
+type CartaoContratacaoProps = {
+  meuId: string
+  souCliente: boolean
+  conversationId: string
+}
+
+function CartaoContratacao({ meuId, souCliente, conversationId }: CartaoContratacaoProps) {
+  const [estado, setEstado] = useState<'carregando' | 'pronto'>('carregando')
+  const [booking, setBooking] = useState<Booking | null>(null)
+  const [erro, setErro] = useState<string | null>(null)
+  const [processando, setProcessando] = useState(false)
+
+  const [mostrarForm, setMostrarForm] = useState(false)
+  const [valor, setValor] = useState('')
+  const [data, setData] = useState('')
+
+  useEffect(() => {
+    let ativo = true
+    buscarContratacaoEmAberto(conversationId)
+      .then((resultado) => {
+        if (!ativo) return
+        setBooking(resultado)
+        setEstado('pronto')
+      })
+      .catch(() => {
+        if (!ativo) return
+        setEstado('pronto')
+      })
+    return () => {
+      ativo = false
+    }
+  }, [conversationId])
+
+  async function aoPropor(evento: FormEvent) {
+    evento.preventDefault()
+    setErro(null)
+
+    const valorNumerico = Number(valor.replace(/\D/g, ''))
+    if (!valorNumerico) {
+      setErro('Informe o valor combinado.')
+      return
+    }
+
+    setProcessando(true)
+    try {
+      const nova = await proporContratacao({
+        conversationId,
+        meuId,
+        valorCombinadoCentavos: valorNumerico,
+        dataServico: data,
+      })
+      setBooking(nova)
+      setMostrarForm(false)
+      setValor('')
+      setData('')
+    } catch (erroCapturado) {
+      setErro(erroCapturado instanceof ErroDeAplicacao ? erroCapturado.message : 'Não foi possível propor a contratação.')
+    } finally {
+      setProcessando(false)
+    }
+  }
+
+  async function aoAceitar() {
+    if (!booking) return
+    setErro(null)
+    setProcessando(true)
+    try {
+      setBooking(await aceitarContratacao(booking.id))
+    } catch (erroCapturado) {
+      setErro(erroCapturado instanceof ErroDeAplicacao ? erroCapturado.message : 'Não foi possível aceitar.')
+    } finally {
+      setProcessando(false)
+    }
+  }
+
+  async function aoRecusarOuCancelar() {
+    if (!booking) return
+    const motivo = window.prompt('Motivo (opcional):') ?? undefined
+    setErro(null)
+    setProcessando(true)
+    try {
+      setBooking(
+        await recusarOuCancelarContratacao({ bookingId: booking.id, meuId, statusAtual: booking.status, motivo }),
+      )
+    } catch (erroCapturado) {
+      setErro(erroCapturado instanceof ErroDeAplicacao ? erroCapturado.message : 'Não foi possível cancelar.')
+    } finally {
+      setProcessando(false)
+    }
+  }
+
+  async function aoConfirmarConclusao() {
+    if (!booking) return
+    setErro(null)
+    setProcessando(true)
+    try {
+      setBooking(await confirmarConclusao({ bookingId: booking.id, meuId, souCliente }))
+    } catch (erroCapturado) {
+      setErro(erroCapturado instanceof ErroDeAplicacao ? erroCapturado.message : 'Não foi possível confirmar.')
+    } finally {
+      setProcessando(false)
+    }
+  }
+
+  if (estado === 'carregando') return null
+
+  if (!booking) {
+    return (
+      <div className="contratacao-card">
+        {!mostrarForm ? (
+          <button type="button" className="ghost-button" onClick={() => setMostrarForm(true)}>
+            Propor contratação
+          </button>
+        ) : (
+          <form className="briefing-form" onSubmit={aoPropor}>
+            {erro && <p className="form-alerta">{erro}</p>}
+            <label>
+              Valor combinado (R$)
+              <input
+                type="text"
+                inputMode="numeric"
+                value={valor}
+                onChange={(evento) => setValor(evento.target.value)}
+                placeholder="Ex.: 15000 = R$ 150,00"
+              />
+            </label>
+            <label>
+              Data do serviço
+              <input type="date" value={data} onChange={(evento) => setData(evento.target.value)} required />
+            </label>
+            <div className="contratacao-acoes">
+              <button type="submit" disabled={processando}>
+                {processando ? 'Enviando…' : 'Enviar proposta'}
+              </button>
+              <button type="button" className="ghost-button" onClick={() => setMostrarForm(false)}>
+                Cancelar
+              </button>
+            </div>
+          </form>
+        )}
+      </div>
+    )
+  }
+
+  const souProponente = booking.proposto_por === meuId
+
+  return (
+    <div className="contratacao-card">
+      <div className="contratacao-card-topo">
+        <span className={`contratacao-status contratacao-status-${booking.status}`}>
+          {RUBRICA_STATUS_BOOKING[booking.status]}
+        </span>
+        <strong>{formatarValorContratacao(booking.valor_combinado_centavos)}</strong>
+        <span>{formatarDataServico(booking.data_servico)}</span>
+      </div>
+
+      {erro && <p className="form-alerta">{erro}</p>}
+
+      {booking.status === 'proposto' && (
+        <div className="contratacao-acoes">
+          {!souProponente && (
+            <button type="button" onClick={aoAceitar} disabled={processando}>
+              Aceitar
+            </button>
+          )}
+          <button type="button" className="danger-button" onClick={aoRecusarOuCancelar} disabled={processando}>
+            {souProponente ? 'Cancelar proposta' : 'Recusar'}
+          </button>
+        </div>
+      )}
+
+      {booking.status === 'aceito' && (
+        <div className="contratacao-acoes">
+          <button type="button" onClick={aoConfirmarConclusao} disabled={processando}>
+            {(souCliente ? booking.confirmado_cliente_em : booking.confirmado_profissional_em)
+              ? 'Aguardando o outro lado…'
+              : 'Confirmar conclusão'}
+          </button>
+          <button type="button" className="danger-button" onClick={aoRecusarOuCancelar} disabled={processando}>
+            Cancelar
+          </button>
+        </div>
+      )}
+
+      <p className="contratacao-card-link">
+        <Link to="/contratacoes">Ver histórico de contratações</Link>
+      </p>
+    </div>
+  )
 }
 
 export default function Conversa() {
@@ -180,6 +388,10 @@ export default function Conversa() {
             <p>{briefing.resumo}</p>
             {briefing.dataDesejada && <p className="chat-briefing-data">Data desejada: {briefing.dataDesejada}</p>}
           </div>
+        )}
+
+        {meuId && (
+          <CartaoContratacao meuId={meuId} souCliente={participante.souCliente} conversationId={participante.conversation.id} />
         )}
 
         <div className="chat-mensagens">
