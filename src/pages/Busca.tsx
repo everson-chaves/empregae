@@ -11,6 +11,7 @@ import {
   type ResultadoBusca,
 } from '../lib/busca'
 import { buscarCategorias, formatarPreco, type Categoria } from '../lib/anuncio'
+import { temSeloAtivo } from '../lib/verificacao'
 import { ErroDeAplicacao } from '../lib/erros'
 
 const LIMITE_POR_PAGINA = 20
@@ -316,6 +317,7 @@ export default function Busca() {
                   </div>
                 </div>
                 <div className="tag-row">
+                  {temSeloAtivo(resultado.verificadoAte) && <span className="tag tag-featured">Verificado</span>}
                   {resultado.precoMedioCentavos !== null && resultado.unidadePreco && (
                     <span className="tag">{formatarPreco(resultado.precoMedioCentavos, resultado.unidadePreco)}</span>
                   )}

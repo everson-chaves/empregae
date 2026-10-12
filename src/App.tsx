@@ -13,6 +13,7 @@ import Conversas from './pages/Conversas'
 import Conversa from './pages/Conversa'
 import Contratacoes from './pages/Contratacoes'
 import Verificacao from './pages/Verificacao'
+import EscopoVerificacao from './pages/EscopoVerificacao'
 import Notificacoes from './pages/Notificacoes'
 import DesinscreverEmail from './pages/DesinscreverEmail'
 import Admin from './pages/Admin'
@@ -95,6 +96,9 @@ export default function App() {
             </RotaProtegida>
           }
         />
+        {/* T07.4 — pública de propósito: quem decide contratar precisa ler
+            isto sem precisar logar. */}
+        <Route path="verificacao/escopo" element={<EscopoVerificacao />} />
 
         {/* E08 — Dev C (T01.3: exige sessão) */}
         <Route

@@ -59,39 +59,61 @@ export type Database = {
       }
       bookings: {
         Row: {
+          cancelado_por: string | null
           concluido_em: string | null
           concluido_por: string | null
+          confirmado_cliente_em: string | null
+          confirmado_profissional_em: string | null
           conversation_id: string
           created_at: string
           data_servico: string
           id: string
+          motivo_cancelamento: string | null
+          proposto_por: string | null
           status: Database["public"]["Enums"]["status_booking"]
           updated_at: string
           valor_combinado_centavos: number
         }
         Insert: {
+          cancelado_por?: string | null
           concluido_em?: string | null
           concluido_por?: string | null
+          confirmado_cliente_em?: string | null
+          confirmado_profissional_em?: string | null
           conversation_id: string
           created_at?: string
           data_servico: string
           id?: string
+          motivo_cancelamento?: string | null
+          proposto_por?: string | null
           status?: Database["public"]["Enums"]["status_booking"]
           updated_at?: string
           valor_combinado_centavos: number
         }
         Update: {
+          cancelado_por?: string | null
           concluido_em?: string | null
           concluido_por?: string | null
+          confirmado_cliente_em?: string | null
+          confirmado_profissional_em?: string | null
           conversation_id?: string
           created_at?: string
           data_servico?: string
           id?: string
+          motivo_cancelamento?: string | null
+          proposto_por?: string | null
           status?: Database["public"]["Enums"]["status_booking"]
           updated_at?: string
           valor_combinado_centavos?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "bookings_cancelado_por_fkey"
+            columns: ["cancelado_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "bookings_concluido_por_fkey"
             columns: ["concluido_por"]
@@ -104,6 +126,13 @@ export type Database = {
             columns: ["conversation_id"]
             isOneToOne: false
             referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_proposto_por_fkey"
+            columns: ["proposto_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -691,6 +720,48 @@ export type Database = {
           },
         ]
       }
+      worker_reports: {
+        Row: {
+          created_at: string
+          id: string
+          motivo: string
+          reporter_id: string | null
+          resolvida: boolean
+          worker_profile_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          motivo: string
+          reporter_id?: string | null
+          resolvida?: boolean
+          worker_profile_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          motivo?: string
+          reporter_id?: string | null
+          resolvida?: boolean
+          worker_profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "worker_reports_reporter_id_fkey"
+            columns: ["reporter_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "worker_reports_worker_profile_id_fkey"
+            columns: ["worker_profile_id"]
+            isOneToOne: false
+            referencedRelation: "worker_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -751,6 +822,14 @@ export type Database = {
       participa_da_conversa: { Args: { id_conversa: string }; Returns: boolean }
       pode_avaliar: { Args: { id_booking: string }; Returns: boolean }
       telefone_do_par: { Args: { id_conversa: string }; Returns: string }
+      verificacoes_expirando_em: {
+        Args: { dias: number }
+        Returns: {
+          profile_id: string
+          verificado_ate: string
+          worker_profile_id: string
+        }[]
+      }
     }
     Enums: {
       status_booking: "proposto" | "aceito" | "concluido" | "cancelado"
