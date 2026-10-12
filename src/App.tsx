@@ -14,6 +14,8 @@ import Conversa from './pages/Conversa'
 import Contratacoes from './pages/Contratacoes'
 import Verificacao from './pages/Verificacao'
 import EscopoVerificacao from './pages/EscopoVerificacao'
+import Notificacoes from './pages/Notificacoes'
+import DesinscreverEmail from './pages/DesinscreverEmail'
 import Admin from './pages/Admin'
 import NaoEncontrada from './pages/NaoEncontrada'
 import Diagnostico from './pages/Diagnostico'
@@ -97,6 +99,19 @@ export default function App() {
         {/* T07.4 — pública de propósito: quem decide contratar precisa ler
             isto sem precisar logar. */}
         <Route path="verificacao/escopo" element={<EscopoVerificacao />} />
+
+        {/* E08 — Dev C (T01.3: exige sessão) */}
+        <Route
+          path="notificacoes"
+          element={
+            <RotaProtegida>
+              <Notificacoes />
+            </RotaProtegida>
+          }
+        />
+        {/* T08.4 — pública de propósito: link de descadastro no rodapé do
+            e-mail não pode exigir sessão. */}
+        <Route path="notificacoes/desinscrever" element={<DesinscreverEmail />} />
 
         {/* E09 — Dev D. T01.3 só garante sessão; restringir a admin de fato é da T09.1. */}
         <Route

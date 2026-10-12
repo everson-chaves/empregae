@@ -37,6 +37,7 @@ export default function Layout() {
         <nav className="nav-actions">
           <Link to="/conversas">Conversas</Link>
           <Link to="/meu-perfil">Meu perfil</Link>
+          <Link to="/notificacoes">Notificações</Link>
           {!carregando &&
             (sessao ? (
               <button type="button" className="ghost-button" onClick={aoSair}>
