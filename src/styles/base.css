@@ -1672,3 +1672,36 @@ textarea:focus {
 .rating-picker button.is-selected {
   color: #e8a33d;
 }
+
+/* E09 — Painel admin: badge de status genérico. Mesmas cores de
+   .contratacao-status-* (E05), mas sem o nome amarrado a booking: aqui
+   cobre status de verificação, denúncia resolvida/pendente e avaliação
+   oculta/visível — três domínios diferentes, um único vocabulário visual. */
+.status-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.status-tag-pendente {
+  background: var(--mint);
+  color: var(--green-dark);
+}
+
+.status-tag-positivo {
+  background: var(--green);
+  color: #fff;
+}
+
+.status-tag-negativo {
+  background: #f3e7e0;
+  color: var(--terracotta);
+}
+
+.admin-pagina {
+  display: grid;
+  gap: 24px;
+}
