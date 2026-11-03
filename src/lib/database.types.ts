@@ -827,7 +827,10 @@ export type Database = {
       }
       estatisticas_avaliacoes: {
         Args: { p_worker_profile_id: string }
-        Returns: { nota_media: number; total_avaliacoes: number }[]
+        Returns: {
+          nota_media: number
+          total_avaliacoes: number
+        }[]
       }
       listar_avaliacoes_profissional: {
         Args: {
@@ -1017,6 +1020,7 @@ export const Constants = {
         "verificacao_reprovada",
         "verificacao_expirando",
         "mensagem_sem_resposta",
+        "avaliacao_pendente",
       ],
       tipo_pagamento: ["verificacao", "boost", "b2b"],
       tipo_perfil: ["cliente", "profissional", "ambos"],
