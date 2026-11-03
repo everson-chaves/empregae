@@ -68,6 +68,7 @@ export type Database = {
           created_at: string
           data_servico: string
           id: string
+          lembrete_avaliacao_enviado_em: string | null
           motivo_cancelamento: string | null
           proposto_por: string | null
           status: Database["public"]["Enums"]["status_booking"]
@@ -84,6 +85,7 @@ export type Database = {
           created_at?: string
           data_servico: string
           id?: string
+          lembrete_avaliacao_enviado_em?: string | null
           motivo_cancelamento?: string | null
           proposto_por?: string | null
           status?: Database["public"]["Enums"]["status_booking"]
@@ -100,6 +102,7 @@ export type Database = {
           created_at?: string
           data_servico?: string
           id?: string
+          lembrete_avaliacao_enviado_em?: string | null
           motivo_cancelamento?: string | null
           proposto_por?: string | null
           status?: Database["public"]["Enums"]["status_booking"]
@@ -784,15 +787,18 @@ export type Database = {
           descricao: string
           distancia_km: number
           nome: string
+          nota_media: number
           preco_medio_centavos: number
           profile_id: string
           raio_atendimento_km: number
+          total_avaliacoes: number
           uf: string
           unidade_preco: Database["public"]["Enums"]["unidade_preco"]
           verificado_ate: string
           worker_profile_id: string
         }[]
       }
+      denunciar_avaliacao: { Args: { p_review_id: string }; Returns: boolean }
       desinscrever_email: { Args: { p_token: string }; Returns: boolean }
       eh_admin: { Args: never; Returns: boolean }
       eh_cliente_da_conversa: {
@@ -811,9 +817,34 @@ export type Database = {
         }
         Returns: undefined
       }
+      enfileirar_lembretes_avaliacao: {
+        Args: { p_horas_apos_conclusao?: number }
+        Returns: number
+      }
       enfileirar_lembretes_mensagem_sem_resposta: {
         Args: never
         Returns: number
+      }
+      estatisticas_avaliacoes: {
+        Args: { p_worker_profile_id: string }
+        Returns: {
+          nota_media: number
+          total_avaliacoes: number
+        }[]
+      }
+      listar_avaliacoes_profissional: {
+        Args: {
+          p_limite?: number
+          p_offset?: number
+          p_worker_profile_id: string
+        }
+        Returns: {
+          autor_nome: string
+          comentario: string
+          created_at: string
+          id: string
+          nota: number
+        }[]
       }
       meu_telefone: { Args: never; Returns: string }
       participa_da_conversa: { Args: { id_conversa: string }; Returns: boolean }
@@ -842,6 +873,7 @@ export type Database = {
         | "verificacao_reprovada"
         | "verificacao_expirando"
         | "mensagem_sem_resposta"
+        | "avaliacao_pendente"
       tipo_pagamento: "verificacao" | "boost" | "b2b"
       tipo_perfil: "cliente" | "profissional" | "ambos"
       unidade_preco: "hora" | "diaria" | "servico"
@@ -988,6 +1020,7 @@ export const Constants = {
         "verificacao_reprovada",
         "verificacao_expirando",
         "mensagem_sem_resposta",
+        "avaliacao_pendente",
       ],
       tipo_pagamento: ["verificacao", "boost", "b2b"],
       tipo_perfil: ["cliente", "profissional", "ambos"],

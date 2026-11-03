@@ -1,6 +1,16 @@
 import { type FormEvent, useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { buscarAnuncioPublico, formatarPreco, type AnuncioPublico } from '../lib/anuncio'
+import {
+  buscarEstatisticasAvaliacoes,
+  denunciarAvaliacao,
+  formatarDataAvaliacao,
+  formatarNotaMedia,
+  listarAvaliacoesProfissional,
+  TAMANHO_PAGINA_AVALIACOES,
+  type AvaliacaoComAutor,
+  type EstatisticasAvaliacoes,
+} from '../lib/avaliacoes'
 import { useSessao } from '../lib/auth'
 import { abrirOuEncontrarConversa } from '../lib/chat'
 import { denunciarProfissional, temSeloAtivo } from '../lib/verificacao'
@@ -195,6 +205,94 @@ function DenunciaModal({ nomeProfissional, onFechar, onEnviar }: DenunciaModalPr
   )
 }
 
+type SecaoAvaliacoesProps = {
+  workerProfileId: string
+  souVisitanteLogado: boolean
+}
+
+/** T06.3 — Exibição: lista paginada, mais recente primeiro, com a opção de
+ *  denunciar (T06.5). Vive na própria página do profissional porque é ali
+ *  que faz sentido ver a reputação completa — a busca (Busca.tsx) só
+ *  mostra o resumo (média + total). */
+function SecaoAvaliacoes({ workerProfileId, souVisitanteLogado }: SecaoAvaliacoesProps) {
+  const [avaliacoes, setAvaliacoes] = useState<AvaliacaoComAutor[]>([])
+  const [pagina, setPagina] = useState(0)
+  const [temMais, setTemMais] = useState(false)
+  const [carregando, setCarregando] = useState(true)
+  const [denunciadas, setDenunciadas] = useState<Set<string>>(new Set())
+
+  useEffect(() => {
+    let ativo = true
+    listarAvaliacoesProfissional(workerProfileId, pagina)
+      .then((lista) => {
+        if (!ativo) return
+        setAvaliacoes((atual) => (pagina === 0 ? lista : [...atual, ...lista]))
+        setTemMais(lista.length === TAMANHO_PAGINA_AVALIACOES)
+        setCarregando(false)
+      })
+      .catch(() => {
+        if (ativo) setCarregando(false)
+      })
+    return () => {
+      ativo = false
+    }
+  }, [workerProfileId, pagina])
+
+  async function aoDenunciar(reviewId: string) {
+    try {
+      await denunciarAvaliacao(reviewId)
+      setDenunciadas((atual) => new Set(atual).add(reviewId))
+    } catch {
+      // Denúncia é acessória — se falhar, a pessoa pode tentar de novo;
+      // não há nada mais a fazer aqui além de deixar o botão como estava.
+    }
+  }
+
+  if (!carregando && avaliacoes.length === 0) {
+    return <p className="empty-state">Ainda não tem avaliação por aqui.</p>
+  }
+
+  return (
+    <div>
+      <ul className="reviews-list">
+        {avaliacoes.map((avaliacao) => (
+          <li key={avaliacao.id} className="review">
+            <strong>
+              {'⭐'.repeat(avaliacao.nota)} · {avaliacao.autorNome}
+            </strong>
+            {avaliacao.comentario && <span>{avaliacao.comentario}</span>}
+            <span>{formatarDataAvaliacao(avaliacao.createdAt)}</span>
+            {souVisitanteLogado &&
+              (denunciadas.has(avaliacao.id) ? (
+                <span>Denúncia enviada — obrigado.</span>
+              ) : (
+                <button type="button" className="link-button" onClick={() => aoDenunciar(avaliacao.id)}>
+                  Denunciar
+                </button>
+              ))}
+          </li>
+        ))}
+      </ul>
+
+      {temMais && (
+        <p style={{ textAlign: 'center', marginTop: 16 }}>
+          <button
+            type="button"
+            className="secondary-button"
+            onClick={() => {
+              setCarregando(true)
+              setPagina((atual) => atual + 1)
+            }}
+            disabled={carregando}
+          >
+            {carregando ? 'Carregando…' : 'Carregar mais'}
+          </button>
+        </p>
+      )}
+    </div>
+  )
+}
+
 export default function PerfilProfissional() {
   const { id } = useParams<{ id: string }>()
   const navegar = useNavigate()
@@ -202,6 +300,7 @@ export default function PerfilProfissional() {
 
   const [estado, setEstado] = useState<Estado>('carregando')
   const [dados, setDados] = useState<AnuncioPublico | null>(null)
+  const [estatisticas, setEstatisticas] = useState<EstatisticasAvaliacoes | null>(null)
   const [modalAberto, setModalAberto] = useState(false)
   const [denunciaAberta, setDenunciaAberta] = useState(false)
 
@@ -221,6 +320,23 @@ export default function PerfilProfissional() {
       ativo = false
     }
   }, [id])
+
+  useEffect(() => {
+    if (!dados) return
+    let ativo = true
+    buscarEstatisticasAvaliacoes(dados.anuncio.id)
+      .then((resultado) => {
+        if (ativo) setEstatisticas(resultado)
+      })
+      .catch(() => {
+        // Estatística é acessório da exibição — se falhar, a página segue
+        // sem o resumo de nota (SecaoAvaliacoes tenta a lista completa
+        // separadamente e tem seu próprio tratamento de erro).
+      })
+    return () => {
+      ativo = false
+    }
+  }, [dados])
 
   // Sem :id na rota não há o que buscar — não é um estado de carregamento,
   // é o mesmo "não encontrado" de um id que não existe. Decidido no render,
@@ -289,6 +405,11 @@ export default function PerfilProfissional() {
 
         <div className="tag-row">
           {selo && <span className="tag tag-featured">Verificado</span>}
+          {estatisticas && estatisticas.total > 0 && (
+            <span className="tag">
+              ⭐ {formatarNotaMedia(estatisticas.notaMedia)} ({estatisticas.total})
+            </span>
+          )}
           {anuncio.preco_medio_centavos !== null && anuncio.unidade_preco && (
             <span className="tag">{formatarPreco(anuncio.preco_medio_centavos, anuncio.unidade_preco)}</span>
           )}
@@ -326,6 +447,11 @@ export default function PerfilProfissional() {
             </button>
           </p>
         )}
+
+        <div className="section-heading" style={{ marginTop: 24 }}>
+          <h3>Avaliações</h3>
+        </div>
+        <SecaoAvaliacoes workerProfileId={anuncio.id} souVisitanteLogado={!!sessao} />
       </article>
 
       {modalAberto && (
