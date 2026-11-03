@@ -1651,3 +1651,24 @@ textarea:focus {
   margin-top: 10px;
   font-size: 13px;
 }
+
+/* E06 — Avaliações: seletor de estrelas do formulário (T06.2). */
+.rating-picker {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.rating-picker button {
+  border: none;
+  background: none;
+  padding: 0;
+  font-size: 28px;
+  line-height: 1;
+  color: #d8dfd6;
+  cursor: pointer;
+}
+
+.rating-picker button.is-selected {
+  color: #e8a33d;
+}

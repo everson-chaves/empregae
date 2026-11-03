@@ -104,6 +104,14 @@ function montarConteudo(evento: EventoNotificacao): Conteudo {
         pushCorpo: 'Você tem uma conversa esperando resposta há mais de 24h.',
         url: `/conversas/${d.conversation_id}`,
       }
+    case 'avaliacao_pendente':
+      return {
+        assunto: 'Que tal avaliar sua contratação no Empregaê?',
+        email: 'Sua contratação foi concluída. Avalie o profissional e ajude outras pessoas a decidir.',
+        pushTitulo: 'Avalie sua contratação',
+        pushCorpo: 'Sua contratação concluída está esperando uma avaliação.',
+        url: '/contratacoes',
+      }
     default:
       return {
         assunto: 'Novidade no Empregaê',

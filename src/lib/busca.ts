@@ -25,6 +25,8 @@ export type ResultadoBusca = {
   verificadoAte: string | null
   categorias: string[]
   distanciaKm: number | null
+  notaMedia: number | null
+  totalAvaliacoes: number
 }
 
 export type ParametrosBusca = {
@@ -72,6 +74,8 @@ export async function buscarProfissionais(parametros: ParametrosBusca): Promise<
     verificadoAte: linha.verificado_ate,
     categorias: linha.categorias ?? [],
     distanciaKm: linha.distancia_km,
+    notaMedia: linha.nota_media,
+    totalAvaliacoes: linha.total_avaliacoes ?? 0,
   }))
 }
 

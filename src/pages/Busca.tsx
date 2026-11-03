@@ -11,6 +11,7 @@ import {
   type ResultadoBusca,
 } from '../lib/busca'
 import { buscarCategorias, formatarPreco, type Categoria } from '../lib/anuncio'
+import { formatarNotaMedia } from '../lib/avaliacoes'
 import { temSeloAtivo } from '../lib/verificacao'
 import { ErroDeAplicacao } from '../lib/erros'
 
@@ -318,6 +319,11 @@ export default function Busca() {
                 </div>
                 <div className="tag-row">
                   {temSeloAtivo(resultado.verificadoAte) && <span className="tag tag-featured">Verificado</span>}
+                  {resultado.totalAvaliacoes > 0 && (
+                    <span className="tag">
+                      ⭐ {formatarNotaMedia(resultado.notaMedia)} ({resultado.totalAvaliacoes})
+                    </span>
+                  )}
                   {resultado.precoMedioCentavos !== null && resultado.unidadePreco && (
                     <span className="tag">{formatarPreco(resultado.precoMedioCentavos, resultado.unidadePreco)}</span>
                   )}
