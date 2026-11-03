@@ -1,67 +1,84 @@
-﻿# Empregaê
+# Empregaê
 
-O **Empregaê** Ã© um projeto de startup de impacto social que conecta clientes a trabalhadores informais prÃ³ximos, usando busca por localizaÃ§Ã£o, cadastro gratuito, WhatsApp e um modelo de destaque opcional.
+**O classificado de serviços do bairro.** Uma plataforma que conecta trabalhadores informais a clientes próximos por busca geográfica, chat interno e reputação verificada.
+
+Projeto de TCC de MBA — startup de impacto social.
 
 ## Problema
 
-No Brasil, muitos trabalhadores informais dependem apenas do boca a boca para conseguir serviÃ§o. Diaristas, pintores, eletricistas, passadeiras, costureiras e pequenos prestadores tÃªm dificuldade para criar presenÃ§a digital, conquistar clientes fixos e organizar sua renda.
+No Brasil, dezenas de milhões de pessoas trabalham por conta própria sem carteira assinada. Diaristas, cuidadores de idosos, eletricistas, pintores, encanadores, costureiras. Quase todos dependem de indicação para conseguir o próximo serviço, o que limita a renda e deixa o profissional invisível para quem acabou de chegar no bairro.
 
-Ao mesmo tempo, clientes precisam encontrar profissionais confiÃ¡veis perto de casa, mas nem sempre sabem onde procurar.
+Do outro lado, o cliente que precisa contratar não tem onde buscar. Recorre a grupos de WhatsApp e tentativa e erro, sem histórico e sem verificação.
 
-## SoluÃ§Ã£o
+## Solução
 
-O Empregaê permite que o cliente digite seu bairro ou endereÃ§o e encontre profissionais prÃ³ximos dentro de um raio de localizaÃ§Ã£o.
+O cliente digita o endereço, escolhe o serviço e encontra profissionais dentro do raio que definir. A conversa acontece no chat da plataforma, onde os dois combinam preço, data e detalhes. Quando o serviço termina, a contratação é marcada como concluída — e só então a avaliação é liberada.
 
-Para trabalhadores, o cadastro Ã© gratuito. Quem quiser mais visibilidade pode assinar um destaque opcional de baixo custo.
+Essa trava é o núcleo do produto: em marketplace de serviços a reputação é o ativo, e reputação que qualquer um pode escrever não vale nada.
 
-## Funcionalidades do protÃ³tipo
+## Modelo de negócio
 
-- Busca por endereÃ§o ou bairro.
-- SugestÃµes de endereÃ§o no estilo Maps.
-- Filtro por raio.
-- Lista de profissionais prÃ³ximos.
-- Perfil do trabalhador.
-- Contato via WhatsApp.
-- Cadastro gratuito de profissional.
-- Plano de destaque opcional por R$ 9,90/mÃªs.
-- SimulaÃ§Ã£o de app mobile/PWA.
+A receita vem da **descoberta**, nunca da transação. Não há taxa sobre o serviço contratado, porque em serviço local recorrente as duas partes acabariam combinando por fora — e a plataforma viraria inimiga dos dois lados.
 
-## Modelo de monetizaÃ§Ã£o
+| Camada | Preço |
+|---|---|
+| Verificação de documento e antecedentes, com selo anual | R$ 39/ano |
+| Impulsionamento na busca, por período | R$ 7 a R$ 20 |
+| Contrato B2B com condomínios e administradoras | R$ 250 a 400/mês |
+| Serviços financeiros — seguro e antecipação (longo prazo) | Comissão |
 
-O trabalhador sempre pode aparecer gratuitamente.
+**O trabalhador nunca paga para trabalhar, só para aparecer — e só quando quiser.** Cadastro, presença na busca e recebimento de contatos são gratuitos e permanentes.
 
-O Empregaê pode arrecadar com:
+Detalhamento em [`docs/modelo-de-negocio.md`](docs/modelo-de-negocio.md).
 
-- Destaque opcional por R$ 9,90/mÃªs.
-- Selo verificado.
-- Prioridade visual na listagem.
-- Mais fotos no perfil.
-- Agenda profissional.
-- DescriÃ§Ã£o melhorada com IA.
+## Estado do código
 
-Importante: quem nÃ£o paga nunca fica escondido.
+⚠️ **O que está neste repositório é o protótipo legado**, escrito em vanilla JS com persistência em `localStorage` e dados simulados. Ele demonstra o fluxo de busca, mas não sustenta operação real — e ainda reflete o modelo de negócio antigo (assinatura de R$ 9,90 e contato por WhatsApp), que foi substituído.
 
-## Como abrir
+A v1 está especificada em [`docs/superpowers/specs/`](docs/superpowers/specs/) e será construída sobre React e Supabase.
 
-Abra `index.html` para ver o protÃ³tipo completo.
+### Protótipo legado
 
-Abra `playstore.html` para ver a simulaÃ§Ã£o de app simples/mobile.
+| Arquivo | Conteúdo |
+|---|---|
+| `index.html` | Protótipo web completo |
+| `playstore.html` | Simulação de app mobile simples |
+| `app.js` | Busca, filtros, cadastro e planos |
+| `styles.css` | Estilos — **aproveitados na v1** |
+| `manifest.webmanifest` | Configuração do PWA |
+| `service-worker.js` | Cache básico para instalação |
+| `assets/` | Imagens e logo |
 
-## Arquivos principais
+Para ver: abra `index.html` no navegador.
 
-- `index.html`: protÃ³tipo web completo.
-- `playstore.html`: simulaÃ§Ã£o de app mobile simples.
-- `styles.css`: estilos visuais.
-- `app.js`: lÃ³gica de busca, cadastro, filtros e planos.
-- `manifest.webmanifest`: configuraÃ§Ã£o PWA.
-- `service-worker.js`: cache bÃ¡sico para app instalÃ¡vel.
-- `assets/`: imagens e logo.
+### Stack da v1
+
+- **Frontend:** React (Vite), mantendo o PWA
+- **Backend:** Supabase — Postgres com PostGIS para busca geográfica, autenticação por telefone, chat em tempo real e controle de acesso no banco
+- **Geocoding:** ViaCEP e Nominatim ou Mapbox
+- **Pagamento:** Pix via Mercado Pago ou Asaas
+
+## Estratégia de entrada
+
+O produto é aberto nacionalmente desde o primeiro dia; a **operação começa concentrada em uma única região-piloto**. Valor de marketplace é local — cadastros espalhados pelo país produzem buscas vazias, e busca vazia é usuário que não volta.
+
+## Documentação
+
+| Documento | Conteúdo |
+|---|---|
+| [`docs/modelo-de-negocio.md`](docs/modelo-de-negocio.md) | Camadas de receita, unit economics, riscos |
+| [`docs/resumo-executivo.md`](docs/resumo-executivo.md) | Visão geral em uma página |
+| [`docs/pitch.md`](docs/pitch.md) | Pitch de 30s, 1min e 3min |
+| [`docs/roteiro-apresentacao.md`](docs/roteiro-apresentacao.md) | Roteiro do pitch e perguntas prováveis |
+| [`docs/roadmap.md`](docs/roadmap.md) | Cronograma de 6 meses e escopo da v1 |
+| [`docs/checklist-faculdade.md`](docs/checklist-faculdade.md) | Checklist de entrega do TCC |
+| [`docs/demo.md`](docs/demo.md) | Roteiro de demonstração |
+| [`docs/superpowers/specs/`](docs/superpowers/specs/) | Especificação técnica e de negócio da v1 |
 
 ## ODS relacionados
 
-- ODS 1: ErradicaÃ§Ã£o da pobreza.
-- ODS 8: Trabalho decente e crescimento econÃ´mico.
-- ODS 10: ReduÃ§Ã£o das desigualdades.
+- **ODS 1** — Erradicação da pobreza
+- **ODS 8** — Trabalho decente e crescimento econômico
+- **ODS 10** — Redução das desigualdades
 
-
-
+A escolha de não monetizar o lado mais vulnerável do marketplace é uma decisão de desenho, não um discurso de apresentação.

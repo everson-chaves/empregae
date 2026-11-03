@@ -1,0 +1,13 @@
+# Normaliza fim de linha. Sem isto, quem desenvolve no Windows commita CRLF,
+# quem usa Linux ou Mac commita LF, e o diff de um arquivo inteiro aparece
+# como alterado sem que ninguem tenha mudado nada. Tambem evita falso
+# negativo na checagem de tipos do CI, que compara arquivo byte a byte.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.avif binary
+*.woff  binary
+*.woff2 binary
