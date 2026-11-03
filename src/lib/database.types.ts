@@ -511,6 +511,7 @@ export type Database = {
           denunciada: boolean
           id: string
           nota: number
+          oculta: boolean
         }
         Insert: {
           autor_id: string
@@ -520,6 +521,7 @@ export type Database = {
           denunciada?: boolean
           id?: string
           nota: number
+          oculta?: boolean
         }
         Update: {
           autor_id?: string
@@ -529,6 +531,7 @@ export type Database = {
           denunciada?: boolean
           id?: string
           nota?: number
+          oculta?: boolean
         }
         Relationships: [
           {
@@ -770,6 +773,58 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_avaliacoes_denunciadas: {
+        Args: never
+        Returns: {
+          comentario: string
+          created_at: string
+          id: string
+          nome_autor: string
+          nome_profissional: string
+          nota: number
+          oculta: boolean
+        }[]
+      }
+      admin_caminho_documento_verificacao: {
+        Args: { p_verification_id: string }
+        Returns: string
+      }
+      admin_denuncias_profissionais: {
+        Args: never
+        Returns: {
+          created_at: string
+          id: string
+          motivo: string
+          nome_profissional: string
+          resolvida: boolean
+          worker_profile_id: string
+        }[]
+      }
+      admin_fila_verificacao: {
+        Args: never
+        Returns: {
+          created_at: string
+          id: string
+          nome_profissional: string
+          observacao: string
+          status: Database["public"]["Enums"]["status_verificacao"]
+          tipo_documento: string
+          validade: string
+          worker_profile_id: string
+        }[]
+      }
+      admin_metricas_piloto: {
+        Args: never
+        Returns: {
+          adesao_verificacao_percentual: number
+          contratacoes_concluidas: number
+          contratacoes_total: number
+          densidade_media_5km: number
+          percentual_buscas_com_5_mais: number
+          profissionais_na_praca: number
+          tempo_mediano_resposta_horas: number
+        }[]
+      }
       buscar_profissionais: {
         Args: {
           p_categoria_slug?: string
